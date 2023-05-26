@@ -35,9 +35,15 @@ const typeDefs = gql`
 
   type Review {
     _id: ID
-    reviewText: String
-    starRating: String!
     createdAt: String
+    author: User
+    text: String
+    rating: Int!
+    brewery: Brewery
+  }
+
+  type ReviewCard {
+    review: Review
     author: User
     brewery: Brewery
   }
@@ -51,7 +57,7 @@ const typeDefs = gql`
     users: [User]
     user(username: String): User
     me: User
-    allReviews: [Review]
+    allReviews(page: Int): [Review]
     review(breweryId: String): [Review]
   }
 
@@ -68,7 +74,7 @@ const typeDefs = gql`
     ): Auth
     login(email: String!, password: String!): Auth
     editUser(input: UpdateUser!): Auth
-    addReview(reviewText: String, starRating: String!, brewery: String): Auth
+    addReview(text: String, rating: Int!, brewery: String): ReviewCard
     editReview(
       reviewId: ID!
       reviewText: String

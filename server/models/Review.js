@@ -3,14 +3,14 @@ const dateFormat = require('../utils/dateFormat');
 const brewerySchema = require('./Brewery');
 
 const reviewSchema = new Schema({
-  reviewText: {
+  text: {
     type: String,
     required: false,
     minLength: 1,
     maxLength: 280,
     trim: true,
   },
-  starRating: {
+  rating: {
     type: Number,
     required: true,
     min: 1,
@@ -25,7 +25,9 @@ const reviewSchema = new Schema({
     default: Date.now,
     get: (timestamp) => dateFormat(timestamp),
   },
-  brewery: brewerySchema,
+  brewery: {
+    type: brewerySchema,
+  },
 });
 
 const Review = model('Review', reviewSchema);

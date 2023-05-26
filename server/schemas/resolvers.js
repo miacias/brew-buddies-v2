@@ -19,8 +19,12 @@ const resolvers = {
       }
       throw new AuthenticationError('Please log in.');
     },
-    // shows three most recent reviews from Review model
-    allReviews: async () => Review.find().sort({ createdAt: -1 }).limit(3),
+    // shows all reviews from most recent first, 50 at a time
+    allReviews: async (page) =>
+      Review.find()
+        .sort({ createdAt: -1 })
+        .skip(page * 50)
+        .limit(50),
     // finds all reviews for one brewery by brewery ID
     review: async (parent, { breweryId }) => {
       const reviewSet = await Review.find({
@@ -124,34 +128,45 @@ const resolvers = {
         );
       }
     },
-    // adds review to User, Brewery, and Review models
-    addReview: async (
-      parent,
-      { breweryId, starRating, reviewText },
-      context
-    ) => {
-      if (context.user) {
-        const newReview = await Review.create({
-          reviewText,
-          starRating,
-          reviewAuthor: context.user.username,
-          breweryId,
-        });
-        const newUserRev = await User.findOneAndUpdate(
-          { _id: context.user._id },
-          {
-            $addToSet: {
-              reviews: newReview._id,
+    // adds review to User and Review models
+    addReview: async (parent, { breweryId, rating, text }, context) => {
+      try {
+        if (context.user) {
+          const newReview = await Review.create({
+            text,
+            rating: parseInt(rating),
+            reviewAuthor: context.user.username,
+            breweryId,
+          });
+          const reviewOnBrewery = await Review.findOneAndUpdate(
+            { _id: newReview._id },
+            {
+              $set: {
+                brewery: breweryId,
+              },
+            }
+          );
+          // populates brewery data with review (cannot populate on create() method)
+          const populatedReview = await reviewOnBrewery.populate('brewery');
+          console.log(newReview, populatedReview);
+          const newUserRev = await User.findOneAndUpdate(
+            { _id: context.user._id },
+            {
+              $addToSet: {
+                reviews: newReview._id,
+              },
             },
-          },
-          {
-            new: true,
-          }
-        );
-        return {
-          review: newReview,
-          user: newUserRev,
-        };
+            {
+              new: true,
+            }
+          );
+          return {
+            review: populatedReview,
+            author: newUserRev,
+          };
+        }
+      } catch (err) {
+        console.error(err);
       }
     },
     // allows user to change review for a brewery
