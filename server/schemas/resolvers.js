@@ -129,26 +129,15 @@ const resolvers = {
       }
     },
     // adds review to User and Review models
-    addReview: async (parent, { breweryId, rating, text }, context) => {
+    addReview: async (parent, { brewery, rating, text }, context) => {
       try {
         if (context.user) {
           const newReview = await Review.create({
             text,
             rating: parseInt(rating),
-            reviewAuthor: context.user.username,
-            breweryId,
+            author: context.user._id,
+            brewery,
           });
-          const reviewOnBrewery = await Review.findOneAndUpdate(
-            { _id: newReview._id },
-            {
-              $set: {
-                brewery: breweryId,
-              },
-            }
-          );
-          // populates brewery data with review (cannot populate on create() method)
-          const populatedReview = await reviewOnBrewery.populate('brewery');
-          console.log(newReview, populatedReview);
           const newUserRev = await User.findOneAndUpdate(
             { _id: context.user._id },
             {
@@ -161,7 +150,7 @@ const resolvers = {
             }
           );
           return {
-            review: populatedReview,
+            review: newReview,
             author: newUserRev,
           };
         }

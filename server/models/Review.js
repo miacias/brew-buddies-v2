@@ -1,6 +1,5 @@
 const { Schema, model } = require('mongoose');
 const dateFormat = require('../utils/dateFormat');
-const brewerySchema = require('./Brewery');
 
 const reviewSchema = new Schema({
   text: {
@@ -26,7 +25,8 @@ const reviewSchema = new Schema({
     get: (timestamp) => dateFormat(timestamp),
   },
   brewery: {
-    type: brewerySchema,
+    type: String,
+    required: true,
   },
 });
 

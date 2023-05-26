@@ -39,13 +39,12 @@ const typeDefs = gql`
     author: User
     text: String
     rating: Int!
-    brewery: Brewery
+    brewery: String!
   }
 
   type ReviewCard {
     review: Review
     author: User
-    brewery: Brewery
   }
 
   type Auth {
@@ -77,8 +76,8 @@ const typeDefs = gql`
     addReview(text: String, rating: Int!, brewery: String): ReviewCard
     editReview(
       reviewId: ID!
-      reviewText: String
-      starRating: String!
+      text: String
+      rating: String!
       brewery: String
     ): Review
     addFriend(friendId: ID!): User

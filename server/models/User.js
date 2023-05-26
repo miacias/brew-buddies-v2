@@ -1,6 +1,6 @@
 const { Schema, model } = require('mongoose');
 const bcrypt = require('bcrypt');
-const brewerySchema = require('./Brewery');
+// const brewerySchema = require('./Brewery');
 
 const userSchema = new Schema(
   {
@@ -52,8 +52,18 @@ const userSchema = new Schema(
         ref: 'Review',
       },
     ],
-    favBreweries: [brewerySchema],
-    wishBreweries: [brewerySchema],
+    favBreweries: [
+      {
+        type: String,
+        required: false,
+      },
+    ],
+    wishBreweries: [
+      {
+        type: String,
+        required: false,
+      },
+    ],
     friends: [
       {
         type: Schema.Types.ObjectId,
@@ -74,6 +84,14 @@ userSchema.virtual('friendCount').get(function () {
 
 userSchema.virtual('reviewCount').get(function () {
   return this.reviews.length;
+});
+
+userSchema.virtual('favCount').get(function () {
+  return this.favBreweries.length;
+});
+
+userSchema.virtual('wishCount').get(function () {
+  return this.wishBreweries.length;
 });
 
 userSchema.pre('save', async function (next) {
