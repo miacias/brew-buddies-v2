@@ -1,5 +1,5 @@
 const { AuthenticationError } = require('apollo-server-express');
-const { User, Brewery, Review } = require('../models');
+const { User, Review } = require('../models');
 const { signToken } = require('../utils/auth');
 
 const resolvers = {
@@ -10,7 +10,6 @@ const resolvers = {
     user: async (parent, { username }) =>
       User.findOne({ username }).populate(['reviews', 'friends']),
     // shows specific user who is logged in currently with attached reviews
-    // do we want to also populate favBreweries & friends?
     me: async (parent, args, context) => {
       if (context.user) {
         return User.findOne({ _id: context.user._id }).populate([
@@ -18,16 +17,12 @@ const resolvers = {
           'friends',
         ]);
       }
-      throw new AuthenticationError('Please log in to do this.');
+      throw new AuthenticationError('Please log in.');
     },
-    // shows all breweries with attached reviews
-    breweries: async () => Brewery.find().populate('reviews'),
-    // shows specific brewery with attached reviews
-    brewery: async (id) => Brewery.findOne({ id }).populate('reviews'),
     // shows three most recent reviews from Review model
-    reviews: async () => Review.find().sort({ createdAt: -1 }).limit(3),
-    // finds review by ID
-    breweryReviews: async (parent, { breweryId }) => {
+    allReviews: async () => Review.find().sort({ createdAt: -1 }).limit(3),
+    // finds all reviews for one brewery by brewery ID
+    review: async (parent, { breweryId }) => {
       const reviewSet = await Review.find({
         breweryId,
       }).sort({ createdAt: -1 });

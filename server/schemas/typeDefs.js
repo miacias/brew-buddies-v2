@@ -12,6 +12,7 @@ const typeDefs = gql`
     intro: String
     pronouns: String
     reviews: [Review]
+    reviewCount: Int
     favBreweries: [Brewery]
     wishBreweries: [Brewery]
     friends: [User]
@@ -50,10 +51,8 @@ const typeDefs = gql`
     users: [User]
     user(username: String): User
     me: User
-    breweries: [Brewery]
-    brewery(breweryId: String): Brewery
-    reviews: [Review]
-    breweryReviews(breweryId: String): [Review]
+    allReviews: [Review]
+    review(breweryId: String): [Review]
   }
 
   type Mutation {
