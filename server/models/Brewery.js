@@ -10,6 +10,7 @@ const brewerySchema = new Schema(
   },
   {
     toJSON: {
+      _id: false,
       virtuals: true,
     },
   }
