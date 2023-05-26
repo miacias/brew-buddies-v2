@@ -1,5 +1,6 @@
 const { Schema, model } = require('mongoose');
 const bcrypt = require('bcrypt');
+const brewerySchema = require('./Brewery');
 
 const userSchema = new Schema(
   {
@@ -28,8 +29,6 @@ const userSchema = new Schema(
     },
     pronouns: {
       type: String,
-      // may need to remove this strict array. if user selects "other" and inputs custom pronouns, this will break
-      // enum: ['She/Her', 'He/Him', 'They/Them', 'Other', 'Prefer not to say'],
       required: false,
     },
     profilePic: {
@@ -53,8 +52,8 @@ const userSchema = new Schema(
         ref: 'Review',
       },
     ],
-    favBreweries: [{ type: String, required: false }],
-    wishBreweries: [{ type: String, required: false }],
+    favBreweries: [brewerySchema],
+    wishBreweries: [brewerySchema],
     friends: [
       {
         type: Schema.Types.ObjectId,
