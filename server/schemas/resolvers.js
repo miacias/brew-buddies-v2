@@ -5,32 +5,57 @@ const { signToken } = require('../utils/auth');
 const resolvers = {
   Query: {
     // shows all users with attached reviews
-    users: async () => User.find().populate(['reviews', 'friends']),
+    users: async () => {
+      try {
+        User.find().populate(['reviews', 'friends']);
+      } catch (err) {
+        console.error(err);
+      }
+    },
     // shows specific user with attached reviews
-    user: async (parent, { username }) =>
-      User.findOne({ username }).populate(['reviews', 'friends']),
+    user: async (parent, { username }) => {
+      try {
+        User.findOne({ username }).populate(['reviews', 'friends']);
+      } catch (err) {
+        console.error(err);
+      }
+    },
     // shows specific user who is logged in currently with attached reviews
     me: async (parent, args, context) => {
-      if (context.user) {
-        return User.findOne({ _id: context.user._id }).populate([
-          'reviews',
-          'friends',
-        ]);
+      try {
+        if (context.user) {
+          return User.findOne({ _id: context.user._id }).populate([
+            'reviews',
+            'friends',
+          ]);
+        }
+        throw new AuthenticationError('Please log in.');
+      } catch (err) {
+        console.error(err);
       }
-      throw new AuthenticationError('Please log in.');
     },
     // shows all reviews from most recent first, 50 at a time
-    allReviews: async (page) =>
-      Review.find()
-        .sort({ createdAt: -1 })
-        .skip(page * 50)
-        .limit(50),
+    allReviews: async (page) => {
+      try {
+        const fiftyReviews = await Review.find()
+          .sort({ createdAt: -1 })
+          .skip(page * 50)
+          .limit(50);
+        return fiftyReviews;
+      } catch (err) {
+        console.error(err);
+      }
+    },
     // finds all reviews for one brewery by brewery ID
     review: async (parent, { breweryId }) => {
-      const reviewSet = await Review.find({
-        breweryId,
-      }).sort({ createdAt: -1 });
-      return reviewSet;
+      try {
+        const reviewSet = await Review.find({
+          breweryId,
+        }).sort({ createdAt: -1 });
+        return reviewSet;
+      } catch (err) {
+        console.error(err);
+      }
     },
   },
   Mutation: {
@@ -48,18 +73,22 @@ const resolvers = {
         pronouns,
       }
     ) => {
-      const newUser = await User.create({
-        username,
-        email,
-        password,
-        profilePic,
-        birthday,
-        postalCode,
-        intro,
-        pronouns,
-      });
-      const token = signToken(newUser);
-      return { token, user: newUser };
+      try {
+        const newUser = await User.create({
+          username,
+          email,
+          password,
+          profilePic,
+          birthday,
+          postalCode,
+          intro,
+          pronouns,
+        });
+        const token = signToken(newUser);
+        return { token, user: newUser };
+      } catch (err) {
+        console.error(err);
+      }
     },
     // connects returning user to site
     login: async (parent, { email, password }) => {
@@ -79,59 +108,71 @@ const resolvers = {
     // allows the user to change their information
     editUser: async (parent, { input }, context) => {
       const { profilePic, postalCode, intro, pronouns } = input;
-      if (context.user) {
-        const editedUser = await User.findOneAndUpdate(
-          { _id: context.user._id },
-          {
-            $set: {
-              profilePic,
-              postalCode,
-              intro,
-              pronouns,
+      try {
+        if (context.user) {
+          const editedUser = await User.findOneAndUpdate(
+            { _id: context.user._id },
+            {
+              $set: {
+                profilePic,
+                postalCode,
+                intro,
+                pronouns,
+              },
             },
-          },
-          {
-            new: true,
-            runValidators: true,
-          }
-        );
-        return { user: editedUser };
+            {
+              new: true,
+              runValidators: true,
+            }
+          );
+          return { user: editedUser };
+        }
+        throw new AuthenticationError('You need to be logged in!');
+      } catch (err) {
+        console.error(err);
       }
-      throw new AuthenticationError('You need to be logged in!');
     },
     // allows user to add another user as a friend
     addFriend: async (parent, { friendId }, context) => {
-      if (context.user) {
-        const newFriend = await User.findOneAndUpdate(
-          { _id: context.user._id },
-          {
-            $addToSet: {
-              friends: friendId,
+      try {
+        if (context.user) {
+          const newFriend = await User.findOneAndUpdate(
+            { _id: context.user._id },
+            {
+              $addToSet: {
+                friends: friendId,
+              },
             },
-          },
-          {
-            new: true,
-          }
-        );
-        return {
-          newFriend,
-        };
+            {
+              new: true,
+            }
+          );
+          return {
+            newFriend,
+          };
+        }
+      } catch (err) {
+        console.error(err);
       }
     },
     // removes user from friends list
     removeFriend: async (parent, { friendId }, context) => {
-      if (context.user) {
-        return User.findOneAndUpdate(
-          { _id: context.user._id },
-          {
-            $pull: {
-              friends: friendId,
+      try {
+        if (context.user) {
+          return User.findOneAndUpdate(
+            { _id: context.user._id },
+            {
+              $pull: {
+                friends: friendId,
+              },
             },
-          },
-          {
-            new: true,
-          }
-        );
+            {
+              new: true,
+            }
+          );
+        }
+      } catch (err) {
+        console.error(err);
       }
     },
     // adds brewery to user favorites list
@@ -248,25 +289,29 @@ const resolvers = {
         console.error(err);
       }
     },
-    // allows user to change review for a brewery
+    // allows user to modify review for a brewery
     editReview: async (
       parent,
       { reviewId, reviewText, starRating },
       context
     ) => {
-      if (context.user) {
-        // edits Review model
-        const revEdit = await Review.findOneAndUpdate(
-          { _id: reviewId },
-          {
-            reviewText: reviewText ? `Edited: ${reviewText}` : reviewText,
-            starRating,
-          },
-          {
-            new: true,
-          }
-        );
-        return revEdit;
+      try {
+        if (context.user) {
+          // edits Review model
+          const revEdit = await Review.findOneAndUpdate(
+            { _id: reviewId },
+            {
+              reviewText: reviewText ? `Edited: ${reviewText}` : reviewText,
+              starRating,
+            },
+            {
+              new: true,
+            }
+          );
+          return revEdit;
+        }
+      } catch (err) {
+        console.error(err);
       }
     },
   },
