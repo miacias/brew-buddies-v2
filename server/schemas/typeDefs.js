@@ -69,17 +69,17 @@ const typeDefs = gql`
     ): Auth
     login(email: String!, password: String!): Auth
     editUser(input: UpdateUser!): Auth
-    addReview(reviewText: String, starRating: String!, brewery: Brewery): Auth
+    addReview(reviewText: String, starRating: String!, brewery: String): Auth
     editReview(
       reviewId: ID!
       reviewText: String
       starRating: String!
-      brewery: Brewery
+      brewery: String
     ): Review
     addFriend(friendId: ID!): User
     removeFriend(friendId: ID!): User
-    addFavBrewery(brewery: Brewery!): User
-    removeFavBrewery(brewery: Brewery!): User
+    addFavBrewery(brewery: String!): User
+    removeFavBrewery(brewery: String!): User
     # addWishBrewery(brewery: Brewery!)
     # removeWishBrewery(brewery: Brewery!)
   }

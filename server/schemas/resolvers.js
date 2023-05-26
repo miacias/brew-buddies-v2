@@ -5,7 +5,6 @@ const { signToken } = require('../utils/auth');
 const resolvers = {
   Query: {
     // shows all users with attached reviews
-    // do we want to also populate favBreweries?
     users: async () => User.find().populate(['reviews', 'friends']),
     // shows specific user with attached reviews
     user: async (parent, { username }) =>
@@ -28,7 +27,7 @@ const resolvers = {
     // shows three most recent reviews from Review model
     reviews: async () => Review.find().sort({ createdAt: -1 }).limit(3),
     // finds review by ID
-    review: async (parent, { breweryId }) => {
+    breweryReviews: async (parent, { breweryId }) => {
       const reviewSet = await Review.find({
         breweryId,
       }).sort({ createdAt: -1 });

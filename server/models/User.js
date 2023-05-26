@@ -72,6 +72,10 @@ userSchema.virtual('friendCount').get(function () {
   return this.friends.length;
 });
 
+userSchema.virtual('reviewCount').get(function () {
+  return this.reviews.length;
+});
+
 userSchema.pre('save', async function (next) {
   if (this.isNew || this.isModified('password')) {
     const saltRounds = 10;
