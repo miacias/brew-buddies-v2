@@ -1,4 +1,4 @@
-const { Schema, model } = require('mongoose');
+const { Schema } = require('mongoose');
 
 const brewerySchema = new Schema(
   {
@@ -7,12 +7,6 @@ const brewerySchema = new Schema(
       type: String,
       required: true,
     },
-    reviews: [
-      {
-        type: Schema.Types.ObjectId,
-        ref: 'Review',
-      },
-    ],
   },
   {
     toJSON: {
@@ -37,6 +31,6 @@ brewerySchema.virtual('reviewCount').get(function () {
   return this.reviews.length;
 });
 
-const Brewery = model('Brewery', brewerySchema);
+// const Brewery = model('Brewery', brewerySchema);
 
-module.exports = Brewery;
+module.exports = brewerySchema;
