@@ -99,14 +99,33 @@ const resolvers = {
       }
       throw new AuthenticationError('You need to be logged in!');
     },
-    // adds brewery to user favorites list
-    addFavBrewery: async (parent, { breweryId }, context) => {
+    // allows user to add another user as a friend
+    addFriend: async (parent, { friendId }, context) => {
+      if (context.user) {
+        const newFriend = await User.findOneAndUpdate(
+          { _id: context.user._id },
+          {
+            $addToSet: {
+              friends: friendId,
+            },
+          },
+          {
+            new: true,
+          }
+        );
+        return {
+          newFriend,
+        };
+      }
+    },
+    // removes user from friends list
+    removeFriend: async (parent, { friendId }, context) => {
       if (context.user) {
         return User.findOneAndUpdate(
           { _id: context.user._id },
           {
-            $addToSet: {
-              favBreweries: breweryId,
+            $pull: {
+              friends: friendId,
             },
           },
           {
@@ -115,17 +134,88 @@ const resolvers = {
         );
       }
     },
-    // removes brewery from user favorites list
-    removeFavBrewery: async (parent, { breweryId }, context) => {
-      if (context.user) {
-        return User.findOneAndUpdate(
-          { _id: context.user._id },
-          {
-            $pull: {
-              favBreweries: breweryId,
+    // adds brewery to user favorites list
+    addFavBrewery: async (parent, { brewery }, context) => {
+      try {
+        if (context.user) {
+          const newFavBrewery = await User.findOneAndUpdate(
+            { _id: context.user._id },
+            {
+              $addToSet: {
+                favBreweries: brewery,
+              },
             },
-          }
-        );
+            {
+              new: true,
+            }
+          );
+          return newFavBrewery;
+        }
+      } catch (err) {
+        console.error(err);
+      }
+    },
+    // removes brewery from user favorites list
+    removeFavBrewery: async (parent, { brewery }, context) => {
+      try {
+        if (context.user) {
+          const delFavBrewery = await User.findOneAndUpdate(
+            { _id: context.user._id },
+            {
+              $pull: {
+                favBreweries: brewery,
+              },
+            },
+            {
+              new: true,
+            }
+          );
+          return delFavBrewery;
+        }
+      } catch (err) {
+        console.error(err);
+      }
+    },
+    // adds brewery to user wish list
+    addWishBrewery: async (parent, { brewery }, context) => {
+      try {
+        if (context.user) {
+          const newWishBrewery = await User.findOneAndUpdate(
+            { _id: context.user._id },
+            {
+              $addToSet: {
+                wishBreweries: brewery,
+              },
+            },
+            {
+              new: true,
+            }
+          );
+          return newWishBrewery;
+        }
+      } catch (err) {
+        console.error(err);
+      }
+    },
+    // removes brewery from user wish list
+    removeWishBrewery: async (parent, { brewery }, context) => {
+      try {
+        if (context.user) {
+          const delWishBrewery = await User.findOneAndUpdate(
+            { _id: context.user._id },
+            {
+              $pull: {
+                wishBreweries: brewery,
+              },
+            },
+            {
+              new: true,
+            }
+          );
+          return delWishBrewery;
+        }
+      } catch (err) {
+        console.error(err);
       }
     },
     // adds review to User and Review models
@@ -177,41 +267,6 @@ const resolvers = {
           }
         );
         return revEdit;
-      }
-    },
-    // allows user to add another user as a friend
-    addFriend: async (parent, { friendId }, context) => {
-      if (context.user) {
-        const newFriend = await User.findOneAndUpdate(
-          { _id: context.user._id },
-          {
-            $addToSet: {
-              friends: friendId,
-            },
-          },
-          {
-            new: true,
-          }
-        );
-        return {
-          newFriend,
-        };
-      }
-    },
-    // removes user from friends list
-    removeFriend: async (parent, { friendId }, context) => {
-      if (context.user) {
-        return User.findOneAndUpdate(
-          { _id: context.user._id },
-          {
-            $pull: {
-              friends: friendId,
-            },
-          },
-          {
-            new: true,
-          }
-        );
       }
     },
   },

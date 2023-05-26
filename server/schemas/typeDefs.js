@@ -13,8 +13,8 @@ const typeDefs = gql`
     pronouns: String
     reviews: [Review]
     reviewCount: Int
-    favBreweries: [Brewery]
-    wishBreweries: [Brewery]
+    favBreweries: [String]
+    wishBreweries: [String]
     friends: [User]
     friendCount: Int
   }
@@ -29,8 +29,6 @@ const typeDefs = gql`
 
   type Brewery {
     breweryId: String!
-    avgRating: Int
-    reviewCount: Int
   }
 
   type Review {
@@ -84,8 +82,8 @@ const typeDefs = gql`
     removeFriend(friendId: ID!): User
     addFavBrewery(brewery: String!): User
     removeFavBrewery(brewery: String!): User
-    # addWishBrewery(brewery: Brewery!)
-    # removeWishBrewery(brewery: Brewery!)
+    addWishBrewery(brewery: String!): User
+    removeWishBrewery(brewery: String!): User
   }
 `;
 
