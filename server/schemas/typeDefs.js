@@ -12,8 +12,9 @@ const typeDefs = gql`
     intro: String
     pronouns: String
     reviews: [Review]
-    favBreweries: [Brewery]
-    wishBreweries: [Brewery]
+    reviewCount: Int
+    favBreweries: [String]
+    wishBreweries: [String]
     friends: [User]
     friendCount: Int
   }
@@ -28,17 +29,20 @@ const typeDefs = gql`
 
   type Brewery {
     breweryId: String!
-    avgRating: Int
-    reviewCount: Int
   }
 
   type Review {
     _id: ID
-    reviewText: String
-    starRating: String!
     createdAt: String
     author: User
-    brewery: Brewery
+    text: String
+    rating: Int!
+    brewery: String!
+  }
+
+  type ReviewCard {
+    review: Review
+    author: User
   }
 
   type Auth {
@@ -50,10 +54,8 @@ const typeDefs = gql`
     users: [User]
     user(username: String): User
     me: User
-    breweries: [Brewery]
-    brewery(breweryId: String): Brewery
-    reviews: [Review]
-    breweryReviews(breweryId: String): [Review]
+    allReviews(page: Int): [Review]
+    review(breweryId: String): [Review]
   }
 
   type Mutation {
@@ -69,19 +71,19 @@ const typeDefs = gql`
     ): Auth
     login(email: String!, password: String!): Auth
     editUser(input: UpdateUser!): Auth
-    addReview(reviewText: String, starRating: String!, brewery: Brewery): Auth
+    addReview(text: String, rating: Int!, brewery: String): ReviewCard
     editReview(
       reviewId: ID!
-      reviewText: String
-      starRating: String!
-      brewery: Brewery
+      text: String
+      rating: String!
+      brewery: String
     ): Review
     addFriend(friendId: ID!): User
     removeFriend(friendId: ID!): User
-    addFavBrewery(brewery: Brewery!): User
-    removeFavBrewery(brewery: Brewery!): User
-    # addWishBrewery(brewery: Brewery!)
-    # removeWishBrewery(brewery: Brewery!)
+    addFavBrewery(brewery: String!): User
+    removeFavBrewery(brewery: String!): User
+    addWishBrewery(brewery: String!): User
+    removeWishBrewery(brewery: String!): User
   }
 `;
 

@@ -1,8 +1,5 @@
 const jwt = require('jsonwebtoken');
 
-// const secret = process.env.SECRET_KEY;
-const expiration = '2h';
-
 module.exports = {
   // protects routes via authentication
   authMiddleware({ req }) {
@@ -19,7 +16,7 @@ module.exports = {
     // adds the decoded user data to request to be accessed in resolver
     try {
       const { data } = jwt.verify(token, process.env.SECRET_KEY, {
-        maxAge: expiration,
+        maxAge: process.env.EXPIRATION,
       });
       req.user = data;
     } catch {
@@ -31,7 +28,7 @@ module.exports = {
   signToken({ email, username, _id }) {
     const payload = { email, username, _id };
     return jwt.sign({ data: payload }, process.env.SECRET_KEY, {
-      expiresIn: expiration,
+      expiresIn: process.env.EXPIRATION,
     });
   },
 };
