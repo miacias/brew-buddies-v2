@@ -11,7 +11,6 @@ export const byPostalCode = async (zipInput) => {
             }
         });
         let data = await response.json();
-        console.log(data);
         return data;
     } catch (err) {
         console.error(err);
@@ -37,7 +36,6 @@ export const byManyIds = async (breweryIds) => {
             }
         });
         let data = await response.json();
-        console.log(data);
         return data;
     } catch (err) {
         console.error(err);
