@@ -19,15 +19,13 @@ export const byPostalCode = async (zipInput) => {
 
 // accepts array of string IDs and returns many breweries by ID
 export const byManyIds = async (breweryIds) => {
-    let idsStr = '';
-    breweryIds.forEach(id => {
-        if (idsStr.length === 0) {
-            return idsStr += id;
-        } else {
-            return idsStr += `,${id}`;
-        }
+    // ensures .join() will complete before try/catch block attempts to fetch from API
+    let idsStrPromise = new Promise((resolve) => {
+        let idsStr = breweryIds.join(',');
+        resolve(idsStr);
     });
     try {
+        const idsStr = await idsStrPromise;
         const response = await fetch(`https://api.openbrewerydb.org/v1/breweries?by_ids=${idsStr}`, {
             method: 'GET',
             headers: {
@@ -36,6 +34,7 @@ export const byManyIds = async (breweryIds) => {
             }
         });
         let data = await response.json();
+        console.log(data)
         return data;
     } catch (err) {
         console.error(err);
