@@ -23,6 +23,7 @@ export default function BreweryApi({ breweryList, setBreweryList }) {
         });
         setZipInput('');
     };
+    
     const { Search } = Input
     if (breweryList === null) {
         return (
