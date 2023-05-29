@@ -20,7 +20,7 @@ export const byPostalCode = async (zipInput) => {
 // accepts array of string IDs and returns many breweries by ID
 export const byManyIds = async (breweryIds) => {
     let idsStr = '';
-    breweryIds.map( id => {
+    breweryIds.forEach(id => {
         if (idsStr.length === 0) {
             return idsStr += id;
         } else {
