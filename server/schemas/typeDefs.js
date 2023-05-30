@@ -45,6 +45,10 @@ const typeDefs = gql`
     author: User
   }
 
+  type FriendsList {
+    friends: [User]
+  }
+
   type Auth {
     token: ID!
     user: User
@@ -54,6 +58,7 @@ const typeDefs = gql`
     users: [User]
     user(username: String): User
     me: User
+    getFriends(ids: [ID!]!): [User]
     allReviews(page: Int): [Review]
     reviewsByBrewery(breweryId: String): [Review]
   }

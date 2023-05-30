@@ -4,7 +4,7 @@ import { useUserContext } from '../components/UserProvider';
 import { Row, Col, Space, Avatar, Divider, Radio, Tabs, Button, Card } from "antd";
 import { UserOutlined } from '@ant-design/icons'
 import { useMutation, useQuery } from "@apollo/client";
-import { GET_USER } from "../utils/queries";
+import { GET_USER, GET_FRIENDS } from "../utils/queries";
 import { ADD_FRIEND, REMOVE_FRIEND, REMOVE_FAV_BREWERY } from "../utils/mutations";
 import { format_date, format_timestamp } from '../utils/formatters';
 import FriendsList from "../components/FriendsList";
@@ -16,11 +16,13 @@ export function ProfilePage() {
   // const navigate = useNavigate();
   const { username } = useParams();
   const [profileData, setProfileData] = useState(null);
+  const [friendsData, setFriendsData] = useState(null);
   const [breweryList, setBreweryList] = useState(new Set([]));
   const [showForm, setShowForm] = useState(false);
   const { loading, error, data: userData, refetch } = useQuery(GET_USER, {
     variables: { username },
   });
+  const { loading: loadingFrnds, error: frndsErr, data: frndsData } = useQuery(GET_FRIENDS);
   const [addFriend] = useMutation(ADD_FRIEND);
   const [removeFriend] = useMutation(REMOVE_FRIEND);
   const [removeFavBrewery] = useMutation(REMOVE_FAV_BREWERY);
@@ -37,8 +39,12 @@ export function ProfilePage() {
     if (!loading && userData.user !== null) {
       setProfileData(userData.user);
     }
+    if (!loadingFrnds && frndsData !== null) {
+      setFriendsData(friendsData);
+    }
+    console.log(friendsData)
     refetch();
-  }, [loading, error, userData]);
+  }, [loading, error, userData, loadingFrnds, frndsErr, frndsData]);
 
 
   const handleFollow = async () => {
@@ -105,7 +111,12 @@ export function ProfilePage() {
     {
       label: `Friends (${profileData?.friendCount})`,
       key: 1,
-      children: <FriendsList friends={userData?.user?.friends}/>
+      children: 
+        <FriendsList 
+          loadingFrnds={loadingFrnds} 
+          frndsErr={frndsErr} 
+          frndsData={frndsData}
+        />
     },
     {
       label: 'Favorites!',

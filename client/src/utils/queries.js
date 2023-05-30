@@ -73,6 +73,17 @@ export const GET_USER = gql`
     }
 `;
 
+export const GET_FRIENDS = gql`
+    query getFriends($ids: [ID!]!) {
+        getFriends(ids: $ids) {
+        _id
+        profilePic
+        username
+        reviewCount
+        }
+    }
+`;
+
 export const ALL_REVIEWS = gql`
     query allReviews {
         allReviews {
