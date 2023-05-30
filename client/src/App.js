@@ -15,14 +15,12 @@ import { UserProvider } from './components/UserProvider';
 import Sidebar from './components/Sidebar';
 import Header from './components/Header';
 import Footer from './components/Footer';
-// import { useUserContext } from './components/UserProvider';
 
 
 const { Content } = Layout;
 
 
 function App() {
-  // const userData = useUserContext();
 
   // Ant Design UI theme
   const token = {

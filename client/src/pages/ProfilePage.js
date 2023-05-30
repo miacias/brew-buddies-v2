@@ -1,15 +1,16 @@
 import React from "react";
 import { useParams, useNavigate, Link } from "react-router-dom";
 import { useUserContext } from '../components/UserProvider';
-import { Row, Col, Space, Avatar, Button, Card } from "antd";
+import { Row, Col, Space, Avatar, Divider, Button, Card } from "antd";
 import { UserOutlined } from '@ant-design/icons'
 import { useMutation, useQuery } from "@apollo/client";
 import { GET_USER } from "../utils/queries";
 import { ADD_FRIEND, REMOVE_FRIEND } from "../utils/mutations";
-import styles from "./UserProfile.module.css";
+import { format_date, format_timestamp } from '../utils/formatters';
 const ObjectId = require("bson-objectid");
 
 export function ProfilePage() {
+
   const [addFriend] = useMutation(ADD_FRIEND);
   const [removeFriend] = useMutation(REMOVE_FRIEND);
   // const navigate = useNavigate();
@@ -18,7 +19,6 @@ export function ProfilePage() {
   const { loading, error, data: userData } = useQuery(GET_USER, {
     variables: { username },
   });
-  let defaultProfilePic = "https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_960_720.png";
 
   const handleFollowFriend = async () => {
     try {
@@ -74,8 +74,9 @@ export function ProfilePage() {
               <p>{userData.user.bio}</p>
             </Space>
           </Space>
+          <Divider orientation='center' plain>Joined {format_date(userData.user?.createdAt)}</Divider>
           <Row>
-
+              
           </Row>
         </>
       )}
