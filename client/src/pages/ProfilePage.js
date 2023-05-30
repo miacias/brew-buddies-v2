@@ -2,6 +2,7 @@ import React from "react";
 import { useParams, useNavigate, Link } from "react-router-dom";
 import { useUserContext } from '../components/UserProvider';
 import { Row, Col, Space, Avatar, Button, Card } from "antd";
+import { UserOutlined } from '@ant-design/icons'
 import { useMutation, useQuery } from "@apollo/client";
 import { GET_USER } from "../utils/queries";
 import { ADD_FRIEND, REMOVE_FRIEND } from "../utils/mutations";
@@ -50,7 +51,7 @@ export function ProfilePage() {
     }
   };
 
-
+  // custom avatar: Ant Design UI v5.4 does not support built-in avatars from URL
   const AvatarFromURL = ({ url, ...props }) => {
     return (
       <Avatar {...props} src={url} />
@@ -61,18 +62,21 @@ export function ProfilePage() {
     <>
       {userData?.user && !loading && (
         <>
-        <Space direction='horizontal' size={16}>
-          {userData.user?.profilePic ? (
-            <AvatarFromURL url={userData.user?.profilePic} size={300} />
-          ) : (
-            <AvatarFromURL url={defaultProfilePic} size={300} />
-          )}
-          <Space direction='vertical'>
-            <h2 style={{fontSize: '24px'}}>{userData.user.username}</h2>
-            <h3 style={{fontSize: '20px'}}>{userData.user.pronouns}</h3>
-            <p>{userData.user.bio}</p>
+          <Space direction='horizontal' size={16}>
+            {userData.user?.profilePic ? (
+              <AvatarFromURL url={userData.user?.profilePic} size={300} />
+            ) : (
+              <Avatar icon={<UserOutlined />} size={300} />
+            )}
+            <Space direction='vertical'>
+              <h2 style={{fontSize: '24px'}}>{userData.user.username}</h2>
+              <h3 style={{fontSize: '20px'}}>{userData.user.pronouns}</h3>
+              <p>{userData.user.bio}</p>
+            </Space>
           </Space>
-        </Space>
+          <Row>
+
+          </Row>
         </>
       )}
     </>

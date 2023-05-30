@@ -77,6 +77,9 @@ const userSchema = new Schema(
   }
 );
 
+// auto-generates createdAt and updatedAt
+userSchema.set('timestamps', true);
+
 userSchema.virtual('friendCount').get(function () {
   return this.friends.length;
 });
