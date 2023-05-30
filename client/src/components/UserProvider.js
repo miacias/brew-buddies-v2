@@ -1,10 +1,16 @@
-import React, { useState, useEffect } from 'react';
-import UserContext from '../utils/UserContext';
+import React, { useState, useEffect, createContext, useContext } from 'react';
 import Auth from '../utils/auth';
 import { useQuery } from "@apollo/client";
 import { GET_ME } from "../utils/queries";
 
-const UserProvider = ({ children }) => {
+
+const UserContext = createContext();
+
+
+export const useUserContext = () => useContext(UserContext);
+
+
+export const UserProvider = ({ children }) => {
   const [userData, setUserData] = useState(null);
   const { loading, error, data /*, refetch */ } = useQuery(GET_ME);
 
@@ -31,4 +37,3 @@ const UserProvider = ({ children }) => {
   );
 };
 
-export default UserProvider;
