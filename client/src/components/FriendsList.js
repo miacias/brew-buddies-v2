@@ -1,37 +1,50 @@
 import React from "react";
+import { Avatar, List } from 'antd';
+import { UserOutlined } from '@ant-design/icons'
 
 
-const {  Avatar, List  } = 'antd';
-const data = [
-  {
-    title: 'Ant Design Title 1',
-  },
-  {
-    title: 'Ant Design Title 2',
-  },
-  {
-    title: 'Ant Design Title 3',
-  },
-  {
-    title: 'Ant Design Title 4',
-  },
-];
+export default function FriendsList(friends) {
+    console.log(friends)
+    const data = [
+        {
+          title: 'Ant Design Title 1',
+        },
+        {
+          title: 'Ant Design Title 2',
+        },
+        {
+          title: 'Ant Design Title 3',
+        },
+        {
+          title: 'Ant Design Title 4',
+        },
+      ];
 
-export default function FriendsList() {
+    // custom avatar: Ant Design UI v5.4 does not support built-in avatars from URL
+    const AvatarFromURL = ({ url, ...props }) => {
+        return (
+        <Avatar {...props} src={url} />
+        );
+    };
 
     return (
-        <List
-            itemLayout="horizontal"
-            dataSource={data}
-            renderItem={(item, index) => (
-            <List.Item>
-                <List.Item.Meta
-                avatar={<Avatar src={`https://xsgames.co/randomusers/avatar.php?g=pixel&key=${index}`} />}
-                title={<a href="https://ant.design">{item.title}</a>}
-                description="Ant Design, a design language for background applications, is refined by Ant UED Team"
+        <>
+            {friends && (
+                <List
+                    itemLayout="horizontal"
+                    dataSource={friends.friends}
+                    renderItem={(item, index) => (
+                    <List.Item>
+                        <List.Item.Meta
+                        key={index}
+                        avatar={item.profilePic ? <AvatarFromURL url={item.profilePic} /> : <Avatar icon={<UserOutlined />} />}
+                        title={<a href="https://ant.design">{item.username}</a>}
+                        // description="Ant Design, a design language for background applications, is refined by Ant UED Team"
+                        />
+                    </List.Item>
+                    )}
                 />
-            </List.Item>
             )}
-        />
+        </>
     )
 }

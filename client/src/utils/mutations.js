@@ -143,21 +143,28 @@ export const EDIT_REVIEW = gql`
 `;
 
 export const ADD_FRIEND = gql`
-    mutation AddFriend(
-      $friendId: ID!
-      ) {
-        addFriend(
-          friendId: $friendId
-          ) {
-            _id
-        }
+  mutation follow($friendId: ID!) {
+    follow(friendId: $friendId) {
+      _id
+      username
+      friendCount
+      friends {
+        _id
+      }
     }
+  }
 `;
 
 export const REMOVE_FRIEND = gql`
-mutation RemoveFriend($friendId: ID!) {
-    removeFriend(friendId: $friendId) {
+  mutation unfollow($friendId: ID!) {
+    unfollow(friendId: $friendId) {
+      _id
+      username
       friendCount
+      friends {
+        _id
+        username
+      }
     }
   }
 `;

@@ -41,7 +41,7 @@ export function ProfilePage() {
   }, [loading, error, userData]);
 
 
-  const handleFollowFriend = async () => {
+  const handleFollow = async () => {
     try {
       const { data } = await addFriend({
         variables: {
@@ -58,7 +58,7 @@ export function ProfilePage() {
     }
   };
 
-  const handleRemoveFriend = async (friendId) => {
+  const handleUnfollow = async (friendId) => {
     try {
       const { data } = await removeFriend({
         variables: {
@@ -105,7 +105,7 @@ export function ProfilePage() {
     {
       label: `Friends (${profileData?.friendCount})`,
       key: 1,
-      children: 'some friends'
+      children: <FriendsList friends={userData?.user?.friends}/>
     },
     {
       label: 'Favorites!',
@@ -144,11 +144,11 @@ export function ProfilePage() {
                 {showForm && <EditUserForm />}
                 {myId !== profileData?._id && myData && (
                   myData.user?.friends.some((friend) => friend.username === userData.username) ? (
-                    <Button onClick={() => handleRemoveFriend(userData._id)}>
-                      Remove Friend
+                    <Button onClick={() => handleUnfollow(userData._id)}>
+                      Unfollow
                     </Button>
                   ) : (
-                    <Button onClick={handleFollowFriend}>Add Friend</Button>
+                    <Button onClick={handleFollow}>Follow</Button>
                   )
                 )}
               </Space>

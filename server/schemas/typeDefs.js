@@ -78,8 +78,8 @@ const typeDefs = gql`
       rating: String!
       brewery: String
     ): Review
-    addFriend(friendId: ID!): User
-    removeFriend(friendId: ID!): User
+    follow(friendId: ID!): User
+    unfollow(friendId: ID!): User
     addFavBrewery(brewery: String!): User
     removeFavBrewery(brewery: String!): User
     addWishBrewery(brewery: String!): User

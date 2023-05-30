@@ -139,7 +139,7 @@ const resolvers = {
       }
     },
     // allows user to add another user as a friend
-    addFriend: async (parent, { friendId }, context) => {
+    follow: async (parent, { friendId }, context) => {
       try {
         if (context.user) {
           const newFriend = await User.findOneAndUpdate(
@@ -153,14 +153,14 @@ const resolvers = {
               new: true,
             }
           );
-          return { newFriend };
+          return newFriend;
         }
       } catch (err) {
         console.error(err);
       }
     },
     // removes user from friends list
-    removeFriend: async (parent, { friendId }, context) => {
+    unfollow: async (parent, { friendId }, context) => {
       try {
         if (context.user) {
           const removeFriend = await User.findOneAndUpdate(
