@@ -9,7 +9,7 @@ const typeDefs = gql`
     birthday: String!
     profilePic: String
     postalCode: String
-    intro: String
+    bio: String
     pronouns: String
     reviews: [Review]
     reviewCount: Int
@@ -23,7 +23,7 @@ const typeDefs = gql`
     _id: ID
     profilePic: String
     postalCode: String
-    intro: String
+    bio: String
     pronouns: String
   }
 
@@ -45,6 +45,10 @@ const typeDefs = gql`
     author: User
   }
 
+  type FriendsList {
+    friends: [User]
+  }
+
   type Auth {
     token: ID!
     user: User
@@ -54,8 +58,9 @@ const typeDefs = gql`
     users: [User]
     user(username: String): User
     me: User
+    getFriends(ids: [ID!]!): [User]
     allReviews(page: Int): [Review]
-    review(breweryId: String): [Review]
+    reviewsByBrewery(breweryId: String): [Review]
   }
 
   type Mutation {
@@ -66,7 +71,7 @@ const typeDefs = gql`
       profilePic: String
       birthday: String!
       postalCode: String
-      intro: String
+      bio: String
       pronouns: String
     ): Auth
     login(email: String!, password: String!): Auth
@@ -78,8 +83,8 @@ const typeDefs = gql`
       rating: String!
       brewery: String
     ): Review
-    addFriend(friendId: ID!): User
-    removeFriend(friendId: ID!): User
+    follow(friendId: ID!): User
+    unfollow(friendId: ID!): User
     addFavBrewery(brewery: String!): User
     removeFavBrewery(brewery: String!): User
     addWishBrewery(brewery: String!): User

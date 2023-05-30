@@ -7,7 +7,8 @@ const resolvers = {
     // shows all users with attached reviews
     users: async () => {
       try {
-        User.find().populate(['reviews', 'friends']);
+        const allUsers = await User.find().populate(['reviews', 'friends']);
+        return allUsers;
       } catch (err) {
         console.error(err);
       }
@@ -15,7 +16,11 @@ const resolvers = {
     // shows specific user with attached reviews
     user: async (parent, { username }) => {
       try {
-        User.findOne({ username }).populate(['reviews', 'friends']);
+        const oneUser = await User.findOne({ username }).populate([
+          'reviews',
+          'friends',
+        ]);
+        return oneUser;
       } catch (err) {
         console.error(err);
       }
@@ -24,14 +29,29 @@ const resolvers = {
     me: async (parent, args, context) => {
       try {
         if (context.user) {
-          return User.findOne({ _id: context.user._id }).populate([
+          const me = await User.findOne({ _id: context.user._id }).populate([
             'reviews',
             'friends',
           ]);
+          return me;
         }
         throw new AuthenticationError('Please log in.');
       } catch (err) {
         console.error(err);
+      }
+    },
+    // gets list of friends for one user
+    getFriends: async (parent, { ids }) => {
+      // console.log('friends ID array:', ids);
+      try {
+        if (ids && ids.length) {
+          const friendsList = await User.find({ _id: { $in: ids } });
+          return friendsList;
+        }
+        return [];
+      } catch (err) {
+        console.error(err);
+        throw new Error('Failed to fetch friends list');
       }
     },
     // shows all reviews from most recent first, 50 at a time
@@ -47,7 +67,7 @@ const resolvers = {
       }
     },
     // finds all reviews for one brewery by brewery ID
-    review: async (parent, { breweryId }) => {
+    reviewsByBrewery: async (parent, { breweryId }) => {
       try {
         const reviewSet = await Review.find({
           breweryId,
@@ -69,7 +89,7 @@ const resolvers = {
         profilePic,
         birthday,
         postalCode,
-        intro,
+        bio,
         pronouns,
       }
     ) => {
@@ -81,7 +101,7 @@ const resolvers = {
           profilePic,
           birthday,
           postalCode,
-          intro,
+          bio,
           pronouns,
         });
         const token = signToken(newUser);
@@ -107,7 +127,7 @@ const resolvers = {
     },
     // allows the user to change their information
     editUser: async (parent, { input }, context) => {
-      const { profilePic, postalCode, intro, pronouns } = input;
+      const { profilePic, postalCode, bio, pronouns } = input;
       try {
         if (context.user) {
           const editedUser = await User.findOneAndUpdate(
@@ -116,7 +136,7 @@ const resolvers = {
               $set: {
                 profilePic,
                 postalCode,
-                intro,
+                bio,
                 pronouns,
               },
             },
@@ -133,7 +153,7 @@ const resolvers = {
       }
     },
     // allows user to add another user as a friend
-    addFriend: async (parent, { friendId }, context) => {
+    follow: async (parent, { friendId }, context) => {
       try {
         if (context.user) {
           const newFriend = await User.findOneAndUpdate(
@@ -147,19 +167,17 @@ const resolvers = {
               new: true,
             }
           );
-          return {
-            newFriend,
-          };
+          return newFriend;
         }
       } catch (err) {
         console.error(err);
       }
     },
     // removes user from friends list
-    removeFriend: async (parent, { friendId }, context) => {
+    unfollow: async (parent, { friendId }, context) => {
       try {
         if (context.user) {
-          return User.findOneAndUpdate(
+          const removeFriend = await User.findOneAndUpdate(
             { _id: context.user._id },
             {
               $pull: {
@@ -170,6 +188,7 @@ const resolvers = {
               new: true,
             }
           );
+          return removeFriend;
         }
       } catch (err) {
         console.error(err);

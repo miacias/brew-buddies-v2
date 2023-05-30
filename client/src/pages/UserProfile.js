@@ -97,7 +97,7 @@ export function UserProfile() {
             {/* <div>{userData.birthday}</div> */}
             
 
-            <div>{userData.intro}</div>
+            <div>{userData.bio}</div>
         </Col>
       </Row>
       {/* had to add meData to the check to get rid of error upon initial page load.  Also removed length check as it was unnecessary.  The actual is changing map() to some() */}

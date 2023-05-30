@@ -8,7 +8,7 @@ export const ADD_USER = gql`
     $birthday: String!
     $profilePic: String
     $postalCode: String
-    $intro: String
+    $bio: String
     $pronouns: String
   ) {
     addUser(
@@ -18,7 +18,7 @@ export const ADD_USER = gql`
       birthday: $birthday
       profilePic: $profilePic
       postalCode: $postalCode
-      intro: $intro
+      bio: $bio
       pronouns: $pronouns
     ) {
       token
@@ -28,7 +28,7 @@ export const ADD_USER = gql`
         email
         password
         birthday
-        intro
+        bio
         postalCode
         profilePic
         pronouns
@@ -50,28 +50,57 @@ export const EDIT_USER = gql`
     editUser(input: $input) {
       user {
         _id
-        profilePic
+        birthday
+        email
+        friendCount
+        bio
+        password
         postalCode
-        intro
+        profilePic
         pronouns
+        reviewCount
+        username
       }
     }
   }
 `;
 
 export const ADD_FAV_BREWERY = gql`
-  mutation addFavBrewery($breweryId: String!) {
-    addFavBrewery(breweryId: $breweryId) {
+  mutation addFavBrewery($brewery: String!) {
+    addFavBrewery(brewery: $brewery) {
+      _id
+      username
       favBreweries
     }
   }
 `;
 
 export const REMOVE_FAV_BREWERY = gql`
-  mutation removeFavBrewery($breweryId: String!) {
-    removeFavBrewery(breweryId: $breweryId) {
+  mutation removeFavBrewery($brewery: String!) {
+    removeFavBrewery(brewery: $brewery) {
+      _id
       username
       favBreweries
+    }
+  }
+`;
+
+export const ADD_WISH_BREWERY = gql`
+  mutation AddWishBrewery($brewery: String!) {
+    addWishBrewery(brewery: $brewery) {
+      _id
+      username
+      wishBreweries
+    }
+  }
+`;
+
+export const REMOVE_WISH_BREWERY = gql`
+  mutation RemoveWishBrewery($brewery: String!) {
+    removeWishBrewery(brewery: $brewery) {
+      _id
+      username
+      wishBreweries
     }
   }
 `;
@@ -114,21 +143,28 @@ export const EDIT_REVIEW = gql`
 `;
 
 export const ADD_FRIEND = gql`
-    mutation AddFriend(
-      $friendId: ID!
-      ) {
-        addFriend(
-          friendId: $friendId
-          ) {
-            _id
-        }
+  mutation follow($friendId: ID!) {
+    follow(friendId: $friendId) {
+      _id
+      username
+      friendCount
+      friends {
+        _id
+      }
     }
+  }
 `;
 
 export const REMOVE_FRIEND = gql`
-mutation RemoveFriend($friendId: ID!) {
-    removeFriend(friendId: $friendId) {
+  mutation unfollow($friendId: ID!) {
+    unfollow(friendId: $friendId) {
+      _id
+      username
       friendCount
+      friends {
+        _id
+        username
+      }
     }
   }
 `;

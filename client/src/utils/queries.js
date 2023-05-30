@@ -1,32 +1,30 @@
 import { gql } from '@apollo/client';
 
 export const GET_ME = gql`
-query me {
-    me {
+    query Me {
+        me {
         _id
-        username
-        email
-        password
         birthday
-        profilePic
-        postalCode
-        intro
-        pronouns
-        reviews {
-            _id
-            reviewText
-            starRating
-            reviewAuthor
-            createdAt
-            breweryId
-        }
+        email
         favBreweries
+        friendCount
         friends {
             _id
-            username
+        }
+        bio
+        password
+        postalCode
+        profilePic
+        pronouns
+        reviewCount
+        reviews {
+            _id
+        }
+        username
+        wishBreweries
         }
     }
-}`
+`;
 
 
 export const ALL_USERS = gql`
@@ -38,94 +36,88 @@ export const ALL_USERS = gql`
             password
             birthday
             friendCount
-            intro
+            bio
             postalCode
             profilePic
             pronouns
+            favBreweries
+            wishBreweries
+            reviewCount
         }
     }
 `;
 
 export const GET_USER = gql`
-query getUser($username: String) {
-    user(username: $username) {
-      _id
-      username
-      email
-      password
-      birthday
-      profilePic
-      postalCode
-      intro
-      pronouns
-      reviews {
+    query oneUser($username: String) {
+        user(username: $username) {
         _id
-        reviewText
-        starRating
-        reviewAuthor
-        createdAt
-        breweryId
-      }
-      favBreweries
-      friends {
         username
-        _id
-      }
-    }
-  }`;
-export const ALL_BREWERIES = gql`
-    query allBreweries {
-        breweries {
+        email
+        password
+        birthday
+        friendCount
+        bio
+        postalCode
+        profilePic
+        pronouns
+        favBreweries
+        reviewCount
+        wishBreweries
+        friends {
             _id
-            breweryId
-            reviews {
-                starRating
-            }
-            avgRating
-            reviewCount
+        }
+        reviews {
+            _id
+        }
         }
     }
 `;
 
-// Apollo error when data is empty: Cannot destructure property 'breweryId' of 'undefined' as it is undefined.
-export const GET_BREWERY = gql`
-    query oneBrewery {
-        brewery {
-            _id
-            breweryId
-            reviews {
-              reviewText
-              starRating
-              reviewAuthor
-              createdAt
-            }
-            avgRating
-            reviewCount
+export const GET_FRIENDS = gql`
+    query getFriends($ids: [ID!]!) {
+        getFriends(ids: $ids) {
+        _id
+        profilePic
+        username
+        reviewCount
         }
     }
 `;
 
 export const ALL_REVIEWS = gql`
     query allReviews {
-        reviews {
+        allReviews {
             _id
-            reviewText
-            starRating
-            reviewAuthor
+            text
+            rating
+            author {
+                _id
+                username
+                pronouns
+                profilePic
+                reviewCount
+            }
             createdAt
-            breweryId
+            brewery
         }
     }
 `;
 
 export const BREWERY_REVIEW = gql`
     query Review($breweryId: String) {
-        review(breweryId: $breweryId) {
+        reviewsByBrewery(breweryId: $breweryId) {
             _id
-            reviewAuthor
+            text
+            rating
+            author {
+                _id
+                username
+                pronouns
+                profilePic
+                reviewCount
+            }
             createdAt
-            reviewText
-            starRating
+            brewery
         }
     }
 `;
