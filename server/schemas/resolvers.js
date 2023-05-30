@@ -7,7 +7,8 @@ const resolvers = {
     // shows all users with attached reviews
     users: async () => {
       try {
-        User.find().populate(['reviews', 'friends']);
+        const allUsers = await User.find().populate(['reviews', 'friends']);
+        return allUsers;
       } catch (err) {
         console.error(err);
       }
@@ -15,7 +16,11 @@ const resolvers = {
     // shows specific user with attached reviews
     user: async (parent, { username }) => {
       try {
-        User.findOne({ username }).populate(['reviews', 'friends']);
+        const oneUser = await User.findOne({ username }).populate([
+          'reviews',
+          'friends',
+        ]);
+        return oneUser;
       } catch (err) {
         console.error(err);
       }
@@ -24,10 +29,11 @@ const resolvers = {
     me: async (parent, args, context) => {
       try {
         if (context.user) {
-          return User.findOne({ _id: context.user._id }).populate([
+          const me = await User.findOne({ _id: context.user._id }).populate([
             'reviews',
             'friends',
           ]);
+          return me;
         }
         throw new AuthenticationError('Please log in.');
       } catch (err) {
@@ -147,9 +153,7 @@ const resolvers = {
               new: true,
             }
           );
-          return {
-            newFriend,
-          };
+          return { newFriend };
         }
       } catch (err) {
         console.error(err);
@@ -159,7 +163,7 @@ const resolvers = {
     removeFriend: async (parent, { friendId }, context) => {
       try {
         if (context.user) {
-          return User.findOneAndUpdate(
+          const removeFriend = await User.findOneAndUpdate(
             { _id: context.user._id },
             {
               $pull: {
@@ -170,6 +174,7 @@ const resolvers = {
               new: true,
             }
           );
+          return removeFriend;
         }
       } catch (err) {
         console.error(err);
