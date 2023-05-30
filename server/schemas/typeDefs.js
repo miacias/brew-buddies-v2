@@ -9,7 +9,7 @@ const typeDefs = gql`
     birthday: String!
     profilePic: String
     postalCode: String
-    intro: String
+    bio: String
     pronouns: String
     reviews: [Review]
     reviewCount: Int
@@ -23,7 +23,7 @@ const typeDefs = gql`
     _id: ID
     profilePic: String
     postalCode: String
-    intro: String
+    bio: String
     pronouns: String
   }
 
@@ -55,7 +55,7 @@ const typeDefs = gql`
     user(username: String): User
     me: User
     allReviews(page: Int): [Review]
-    review(breweryId: String): [Review]
+    reviewsByBrewery(breweryId: String): [Review]
   }
 
   type Mutation {
@@ -66,7 +66,7 @@ const typeDefs = gql`
       profilePic: String
       birthday: String!
       postalCode: String
-      intro: String
+      bio: String
       pronouns: String
     ): Auth
     login(email: String!, password: String!): Auth

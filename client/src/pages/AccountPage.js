@@ -111,7 +111,7 @@ export function AccountPage() {
             {/* <div>{userData.birthday}</div> */}
             
 
-            <div>{userData.intro}</div>
+            <div>{userData.bio}</div>
         </Col>
       </Row>
             <Card title={<h2 style={{ fontSize: '24px' }}>Friend List</h2>} style={{ width: '25%' }}>

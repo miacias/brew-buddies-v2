@@ -1,6 +1,5 @@
 const { Schema, model } = require('mongoose');
 const bcrypt = require('bcrypt');
-// const brewerySchema = require('./Brewery');
 
 const userSchema = new Schema(
   {
@@ -35,7 +34,7 @@ const userSchema = new Schema(
       type: String,
       required: false,
     },
-    intro: {
+    bio: {
       type: String,
       required: false,
       minlength: 0,

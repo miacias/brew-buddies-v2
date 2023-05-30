@@ -8,7 +8,7 @@ export const ADD_USER = gql`
     $birthday: String!
     $profilePic: String
     $postalCode: String
-    $intro: String
+    $bio: String
     $pronouns: String
   ) {
     addUser(
@@ -18,7 +18,7 @@ export const ADD_USER = gql`
       birthday: $birthday
       profilePic: $profilePic
       postalCode: $postalCode
-      intro: $intro
+      bio: $bio
       pronouns: $pronouns
     ) {
       token
@@ -28,7 +28,7 @@ export const ADD_USER = gql`
         email
         password
         birthday
-        intro
+        bio
         postalCode
         profilePic
         pronouns
@@ -53,7 +53,7 @@ export const EDIT_USER = gql`
         birthday
         email
         friendCount
-        intro
+        bio
         password
         postalCode
         profilePic

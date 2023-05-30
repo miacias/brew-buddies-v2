@@ -11,7 +11,7 @@ export const GET_ME = gql`
         friends {
             _id
         }
-        intro
+        bio
         password
         postalCode
         profilePic
@@ -28,20 +28,22 @@ export const GET_ME = gql`
 
 
 export const ALL_USERS = gql`
-    users {
-        _id
-        username
-        email
-        password
-        birthday
-        friendCount
-        intro
-        postalCode
-        profilePic
-        pronouns
-        favBreweries
-        wishBreweries
-        reviewCount
+    query allUsers {
+        users {
+            _id
+            username
+            email
+            password
+            birthday
+            friendCount
+            bio
+            postalCode
+            profilePic
+            pronouns
+            favBreweries
+            wishBreweries
+            reviewCount
+        }
     }
 `;
 
@@ -54,7 +56,7 @@ export const GET_USER = gql`
         password
         birthday
         friendCount
-        intro
+        bio
         postalCode
         profilePic
         pronouns
@@ -73,25 +75,38 @@ export const GET_USER = gql`
 
 export const ALL_REVIEWS = gql`
     query allReviews {
-        reviews {
+        allReviews {
             _id
-            reviewText
-            starRating
-            reviewAuthor
+            text
+            rating
+            author {
+                _id
+                username
+                pronouns
+                profilePic
+                reviewCount
+            }
             createdAt
-            breweryId
+            brewery
         }
     }
 `;
 
 export const BREWERY_REVIEW = gql`
     query Review($breweryId: String) {
-        review(breweryId: $breweryId) {
+        reviewsByBrewery(breweryId: $breweryId) {
             _id
-            reviewAuthor
+            text
+            rating
+            author {
+                _id
+                username
+                pronouns
+                profilePic
+                reviewCount
+            }
             createdAt
-            reviewText
-            starRating
+            brewery
         }
     }
 `;

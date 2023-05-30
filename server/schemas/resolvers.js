@@ -53,7 +53,7 @@ const resolvers = {
       }
     },
     // finds all reviews for one brewery by brewery ID
-    review: async (parent, { breweryId }) => {
+    reviewsByBrewery: async (parent, { breweryId }) => {
       try {
         const reviewSet = await Review.find({
           breweryId,
@@ -75,7 +75,7 @@ const resolvers = {
         profilePic,
         birthday,
         postalCode,
-        intro,
+        bio,
         pronouns,
       }
     ) => {
@@ -87,7 +87,7 @@ const resolvers = {
           profilePic,
           birthday,
           postalCode,
-          intro,
+          bio,
           pronouns,
         });
         const token = signToken(newUser);
@@ -113,7 +113,7 @@ const resolvers = {
     },
     // allows the user to change their information
     editUser: async (parent, { input }, context) => {
-      const { profilePic, postalCode, intro, pronouns } = input;
+      const { profilePic, postalCode, bio, pronouns } = input;
       try {
         if (context.user) {
           const editedUser = await User.findOneAndUpdate(
@@ -122,7 +122,7 @@ const resolvers = {
               $set: {
                 profilePic,
                 postalCode,
-                intro,
+                bio,
                 pronouns,
               },
             },

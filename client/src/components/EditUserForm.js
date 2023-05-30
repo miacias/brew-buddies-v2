@@ -89,7 +89,7 @@ export const EditUserForm = () => {
     setUserFormData({
       profilePic: "",
       postalCode: "",
-      intro: "",
+      bio: "",
       pronouns: "",
     });
   };
@@ -147,8 +147,8 @@ export const EditUserForm = () => {
       </Form.Item>
 
       <Form.Item
-        name="intro"
-        label="Intro"
+        name="bio"
+        label="Bio"
         rules={[
           {
             required: false,
@@ -157,10 +157,10 @@ export const EditUserForm = () => {
         ]}
       >
         <Input.TextArea
-          placeholder={userData.intro}
-          name="intro"
+          placeholder={userData.bio}
+          name="bio"
           onChange={handleInputChange}
-          value={userFormData.intro}
+          value={userFormData.bio}
           showCount
           maxLength={250}
         />

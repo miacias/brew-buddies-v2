@@ -91,7 +91,7 @@ const Signup = () => {
       username: "",
       profilePic: "",
       postalCode: "",
-      intro: "",
+      bio: "",
       pronouns: "",
       birthday: "",
     });
@@ -245,8 +245,8 @@ const Signup = () => {
       </Form.Item>
 
       <Form.Item
-        name="intro"
-        label="Intro"
+        name="bio"
+        label="Bio"
         rules={[
           {
             required: false,
@@ -255,10 +255,10 @@ const Signup = () => {
         ]}
       >
         <Input.TextArea
-          placeholder="Intro"
-          name="intro"
+          placeholder="Bio"
+          name="bio"
           onChange={handleInputChange}
-          value={userFormData.intro}
+          value={userFormData.bio}
           showCount
           maxLength={250}
         />
