@@ -2,7 +2,7 @@ import { Layout, Menu, Avatar } from 'antd';
 import { useUserContext } from '../components/UserProvider';
 import { Link } from 'react-router-dom';
 import Auth from '../utils/auth';
-import Icon, { HomeFilled } from '@ant-design/icons';
+import Icon, { HomeFilled, UserOutlined } from '@ant-design/icons';
 import { ReactComponent as BeerMugIcon } from './beerMug.svg';
 
 
@@ -30,7 +30,7 @@ function Sidebar() {
             {
             key: "/profile",
             label: <Link to="/profile">Profile Page</Link>,
-            icon: <Avatar src={userData?.profilePic}/>
+            icon: userData?.profilePic ? <Avatar src={userData?.profilePic}/> : <Avatar icon={<UserOutlined />} />
             },
             {
             key: "4",
