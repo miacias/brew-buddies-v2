@@ -40,7 +40,7 @@ export function ProfilePage() {
       setProfileData(userData.user);
     }
     if (!loadingFrnds && frndsData !== null) {
-      setFriendsData(friendsData);
+      setFriendsData(frndsData);
     }
     console.log(friendsData)
     refetch();
