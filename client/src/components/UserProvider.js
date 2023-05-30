@@ -6,7 +6,7 @@ import { GET_ME } from "../utils/queries";
 
 const UserProvider = ({ children }) => {
   const [userData, setUserData] = useState(null);
-  const { loading, error, data, refetch } = useQuery(GET_ME);
+  const { loading, error, data /*, refetch */ } = useQuery(GET_ME);
 
   useEffect(() => {
     // retrieves and validates JWT

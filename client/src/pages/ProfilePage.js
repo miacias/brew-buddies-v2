@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { useParams, useNavigate, Link } from "react-router-dom";
 import { Row, Col, Button, Card, } from "antd";
 import { useMutation, useQuery } from "@apollo/client";
-import { GET_USER, GET_ME } from "../utils/queries";
+import { GET_USER } from "../utils/queries";
 import { ADD_FRIEND, REMOVE_FRIEND, REMOVE_FAV_BREWERY } from "../utils/mutations";
 import { EditUserForm } from "../components/EditUserForm";
 import BreweryCard from "../components/BreweryCard";
@@ -23,12 +23,6 @@ export function ProfilePage() {
     const [removeFavBrewery] = useMutation(REMOVE_FAV_BREWERY);
     const [addFriend] = useMutation(ADD_FRIEND);
     const [removeFriend] = useMutation(REMOVE_FRIEND);
-    const {
-        loading: loadingMe,
-        error: errorMe,
-        data: dataMe,
-        refetch,
-      } = useQuery(GET_ME);
     const {
         loading: loadingUser,
         error: errorUser,
