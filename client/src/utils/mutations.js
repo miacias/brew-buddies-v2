@@ -50,28 +50,57 @@ export const EDIT_USER = gql`
     editUser(input: $input) {
       user {
         _id
-        profilePic
-        postalCode
+        birthday
+        email
+        friendCount
         intro
+        password
+        postalCode
+        profilePic
         pronouns
+        reviewCount
+        username
       }
     }
   }
 `;
 
 export const ADD_FAV_BREWERY = gql`
-  mutation addFavBrewery($breweryId: String!) {
-    addFavBrewery(breweryId: $breweryId) {
+  mutation addFavBrewery($brewery: String!) {
+    addFavBrewery(brewery: $brewery) {
+      _id
+      username
       favBreweries
     }
   }
 `;
 
 export const REMOVE_FAV_BREWERY = gql`
-  mutation removeFavBrewery($breweryId: String!) {
-    removeFavBrewery(breweryId: $breweryId) {
+  mutation removeFavBrewery($brewery: String!) {
+    removeFavBrewery(brewery: $brewery) {
+      _id
       username
       favBreweries
+    }
+  }
+`;
+
+export const ADD_WISH_BREWERY = gql`
+  mutation AddWishBrewery($brewery: String!) {
+    addWishBrewery(brewery: $brewery) {
+      _id
+      username
+      wishBreweries
+    }
+  }
+`;
+
+export const REMOVE_WISH_BREWERY = gql`
+  mutation RemoveWishBrewery($brewery: String!) {
+    removeWishBrewery(brewery: $brewery) {
+      _id
+      username
+      wishBreweries
     }
   }
 `;
