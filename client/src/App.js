@@ -1,7 +1,7 @@
 // client-side packages
 import React from 'react';
 import { Layout, Space, Divider, ConfigProvider, theme } from 'antd';
-import { Link, BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 // client-side utils, pages, components
 import HomePage from './pages/HomePage';
 import ConnectPage from './pages/ConnectPage';
@@ -9,20 +9,20 @@ import SignupPage from './pages/SignupPage';
 import SearchPage from './pages/SearchPage';
 import SingleBrewery from './pages/SingleBrewery';
 import { UserProfile } from './pages/UserProfile';
+import { ProfilePage } from './pages/ProfilePage';
 import { AccountPage } from './pages/AccountPage';
 import { UserProvider } from './components/UserProvider';
 import Sidebar from './components/Sidebar';
 import Header from './components/Header';
 import Footer from './components/Footer';
-import { useUserContext } from './components/UserProvider';
+// import { useUserContext } from './components/UserProvider';
 
 
 const { Content } = Layout;
 
 
 function App() {
-  const userData = useUserContext();
-  console.log(userData)
+  // const userData = useUserContext();
 
   // Ant Design UI theme
   const token = {
@@ -69,7 +69,7 @@ function App() {
                   }}
                 >
                   <Routes>
-                    <Route
+                    {/* <Route
                       path='/profile/:username'
                       exact
                       element={
@@ -80,8 +80,20 @@ function App() {
                           background: colorBgContainer,
                           }}
                         />}
-                    />
+                    /> */}
                     <Route
+                      path='/profile/:username'
+                      exact
+                      element={
+                        <ProfilePage
+                          style={{
+                          padding: 24,
+                          minHeight: 360,
+                          background: colorBgContainer,
+                          }}
+                        />}
+                    />
+                    {/* <Route
                       path='/profile'
                       exact
                       element={
@@ -92,7 +104,7 @@ function App() {
                           background: colorBgContainer,
                           }}
                         />}
-                    />
+                    /> */}
                     <Route 
                       path='/beweries/:breweryId'
                       exact

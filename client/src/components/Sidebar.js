@@ -14,39 +14,39 @@ function Sidebar() {
     const userData = useUserContext();
 
     // navbar menu items
-  const items = [
-    {
-      key: "/",
-      label: <Link to="/">Home</Link>,
-      icon: <HomeFilled />
-    },
-    {
-      key: "/breweries",
-      label: <Link to="/breweries">Breweries</Link>,
-      icon: <Icon component={BeerMugIcon} />
-    },
-    ...Auth.loggedIn() ? 
-      [
+    const items = [
         {
-        key: "/profile",
-        label: <Link to="/profile">Profile Page</Link>,
-        icon: <Avatar src={userData?.profilePic}/>
+        key: "/",
+        label: <Link to="/">Home</Link>,
+        icon: <HomeFilled />
         },
         {
-          key: "4",
-          label: <Link to="/" onClick={() => Auth.logout()}>Logout</Link>,
-        }
-      ] : [
-        {
-          key: "/signup",
-          label: <Link to="/signup">Sign Up</Link>,
+        key: "/breweries",
+        label: <Link to="/breweries">Breweries</Link>,
+        icon: <Icon component={BeerMugIcon} />
         },
-        {
-          key: "/connect",
-          label: <Link to="/connect">Login</Link>,
-        }
-      ],
-  ]
+        ...Auth.loggedIn() ? 
+        [
+            {
+            key: "/profile",
+            label: <Link to="/profile">Profile Page</Link>,
+            icon: <Avatar src={userData?.profilePic}/>
+            },
+            {
+            key: "4",
+            label: <Link to="/" onClick={() => Auth.logout()}>Logout</Link>,
+            }
+        ] : [
+            {
+            key: "/signup",
+            label: <Link to="/signup">Sign Up</Link>,
+            },
+            {
+            key: "/connect",
+            label: <Link to="/connect">Login</Link>,
+            }
+        ],
+    ]
 
     return (
         <Sider
