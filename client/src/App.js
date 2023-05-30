@@ -1,11 +1,12 @@
 // client-side packages
-import React from 'react';
-import { ApolloClient, InMemoryCache, ApolloProvider, createHttpLink } from '@apollo/client';
+import React, { useContext } from 'react';
+// import { ApolloClient, InMemoryCache, ApolloProvider, createHttpLink } from '@apollo/client';
 import { Layout, Menu, Avatar, Space, Divider, ConfigProvider, theme } from 'antd';
-import { setContext } from '@apollo/client/link/context';
+// import { setContext } from '@apollo/client/link/context';
 import { Link, BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 // client-side utils, pages, components
 import Auth from '../src/utils/auth';
+import UserContext from './utils/UserContext';
 import HomePage from './pages/HomePage';
 import ConnectPage from './pages/ConnectPage';
 import SignupPage from './pages/SignupPage';
@@ -20,32 +21,34 @@ import Footer from './components/Footer';
 
 const { Content, Sider } = Layout;
 
-// sets endpoint for main GraphQL API
-const httpLink = createHttpLink({
-  uri: '/graphql',
-});
+// // sets endpoint for main GraphQL API
+// const httpLink = createHttpLink({
+//   uri: '/graphql',
+// });
 
-// sets request middleware to attach JWT token to each request with authorization header
-const authLink = setContext((_, { headers }) => {
-  // gets authentication token from local storage
-  const token = localStorage.getItem('id_token');
-  // returns headers to context for httpLink to read
-  return {
-    headers: {
-      ...headers,
-      authorization: token ? `Bearer ${token}` : '',
-    },
-  };
-});
+// // sets request middleware to attach JWT token to each request with authorization header
+// const authLink = setContext((_, { headers }) => {
+//   // gets authentication token from local storage
+//   const token = localStorage.getItem('id_token');
+//   // returns headers to context for httpLink to read
+//   return {
+//     headers: {
+//       ...headers,
+//       authorization: token ? `Bearer ${token}` : '',
+//     },
+//   };
+// });
 
-const client = new ApolloClient({
-  // executes authLink middleware before making request to GraphQL API
-  link: authLink.concat(httpLink),
-  cache: new InMemoryCache(),
-});
+// const client = new ApolloClient({
+//   // executes authLink middleware before making request to GraphQL API
+//   link: authLink.concat(httpLink),
+//   cache: new InMemoryCache(),
+// });
 
 
 function App() {
+  const userData = useContext(UserContext);
+
   // Ant Design UI theme
   const token = {
     colorPrimary: "#f4900c", // amber
@@ -91,7 +94,7 @@ function App() {
 
 
   return (
-    <ApolloProvider client={client}>
+    // <ApolloProvider client={client}>
       <UserProvider>
         <ConfigProvider
           theme={{
@@ -141,6 +144,13 @@ function App() {
                     background: colorBgContainer,
                   }}
                 />
+                    <div>
+                      {userData ? (
+                        <p>Welcome, {userData.name}!</p>
+                      ) : (
+                        <p>Loading...</p>
+                      )}
+                    </div>
                 {/* renders content section based on current url route */}
                 <Content
                   style={{
@@ -239,7 +249,7 @@ function App() {
           </Layout>
         </ConfigProvider>
       </UserProvider>
-    </ApolloProvider>
+    // </ApolloProvider>
   );
 }
 
