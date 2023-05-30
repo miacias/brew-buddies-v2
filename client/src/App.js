@@ -13,6 +13,7 @@ import SearchPage from './pages/SearchPage';
 import SingleBrewery from './pages/SingleBrewery';
 import { UserProfile } from './pages/UserProfile';
 import { AccountPage } from './pages/AccountPage';
+import UserProvider from './components/UserProvider';
 import Header from './components/Header';
 import Footer from './components/Footer';
 
@@ -91,151 +92,153 @@ function App() {
 
   return (
     <ApolloProvider client={client}>
-      <ConfigProvider
-        theme={{
-          token: {
-            colorPrimary: token.colorPrimary,
-            colorSuccess: token.colorSuccess,
-            colorWarning: token.colorWarning,
-            colorInfo: token.colorInfo
-          }
-        }}
-      >
-        {/* sets layout for navigation sidebar */}
-        <Layout>
-          <Router>
-            {/* contains side-view, hamburger button, and menu options */}
-            <Sider
-              breakpoint="lg"
-              collapsedWidth="0"
-              onBreakpoint={(broken) => {
-                // console.log(broken);
-              }}
-              onCollapse={(collapsed, type) => {
-                // console.log(collapsed, type);
-              }}
-            >
-              <div className="logo" />
-              {/* <Space direction='vertical'> */}
-                <Menu
-                  theme="dark"
-                  mode="inline"
-                  defaultSelectedKeys={window.location.pathname} // highlights based on when pathname matches item key
-                  items={items} 
-                />
-                {/* shows user profile picture when logged in */}
-                {/* {Auth.loggedIn() ? (
-                    <Avatar
-                      src={'https://images4-f.ravelrycache.com/uploads/LightningCat/163663408/DSCN1058_medium2.JPG'}/>
-                ) : (
-                  ''
-                )}              */}
-            </Sider>
-            {/* sets inner layout for header, content, and footer */}
-            <Layout>
-              <Header
-                style={{
-                  padding: 0,
-                  background: colorBgContainer,
+      <UserProvider>
+        <ConfigProvider
+          theme={{
+            token: {
+              colorPrimary: token.colorPrimary,
+              colorSuccess: token.colorSuccess,
+              colorWarning: token.colorWarning,
+              colorInfo: token.colorInfo
+            }
+          }}
+        >
+          {/* sets layout for navigation sidebar */}
+          <Layout>
+            <Router>
+              {/* contains side-view, hamburger button, and menu options */}
+              <Sider
+                breakpoint="lg"
+                collapsedWidth="0"
+                onBreakpoint={(broken) => {
+                  // console.log(broken);
                 }}
-              />
-              {/* renders content section based on current url route */}
-              <Content
-                style={{
-                  margin: '24px 16px 0',
+                onCollapse={(collapsed, type) => {
+                  // console.log(collapsed, type);
                 }}
               >
-                <Routes>
-                  <Route
-                    path='/profile/:username'
-                    exact
-                    element={
-                      <UserProfile
-                        style={{
-                        padding: 24,
-                        minHeight: 360,
-                        background: colorBgContainer,
-                        }}
-                      />}
+                <div className="logo" />
+                {/* <Space direction='vertical'> */}
+                  <Menu
+                    theme="dark"
+                    mode="inline"
+                    defaultSelectedKeys={window.location.pathname} // highlights based on when pathname matches item key
+                    items={items} 
                   />
-                  <Route
-                    path='/profile'
-                    exact
-                    element={
-                      <AccountPage
-                        style={{
-                        padding: 24,
-                        minHeight: 360,
-                        background: colorBgContainer,
-                        }}
-                      />}
-                  />
-                  <Route 
-                    path='/beweries/:breweryId'
-                    exact
-                    element={
-                      <SingleBrewery/>
-                    }
-                  />
-                  <Route
-                    path='/breweries'
-                    exact
-                    element={
-                      <SearchPage
-                        style={{
-                        padding: 24,
-                        minHeight: 360,
-                        background: colorBgContainer,
-                        }}
-                      />}
-                  />
-                  <Route
-                    path='/connect'
-                    exact
-                    element={
-                      <ConnectPage 
-                        style={{
-                        padding: 24,
-                        minHeight: 360,
-                        background: colorBgContainer,
-                        }}
-                      />}
-                  />
-                  <Route
-                    path='/signup'
-                    exact
-                    element={
-                      <SignupPage 
-                        style={{
-                        padding: 24,
-                        minHeight: 360,
-                        background: colorBgContainer,
-                        }}
-                      />}
-                  />
-                  <Route
-                    path='/'
-                    element={
-                      <HomePage 
-                        style={{
-                        padding: 24,
-                        minHeight: 360,
-                        background: colorBgContainer,
-                        }}
-                      />}
-                  />
-                </Routes>
-              </Content>
-              {/* ends inner layout with footer */}
-              <Footer
-                style={{
-                  textAlign: 'center',
-                }}
-              />
-            </Layout>
-          </Router>
-        </Layout>
-      </ConfigProvider>
+                  {/* shows user profile picture when logged in */}
+                  {/* {Auth.loggedIn() ? (
+                      <Avatar
+                        src={'https://images4-f.ravelrycache.com/uploads/LightningCat/163663408/DSCN1058_medium2.JPG'}/>
+                  ) : (
+                    ''
+                  )}              */}
+              </Sider>
+              {/* sets inner layout for header, content, and footer */}
+              <Layout>
+                <Header
+                  style={{
+                    padding: 0,
+                    background: colorBgContainer,
+                  }}
+                />
+                {/* renders content section based on current url route */}
+                <Content
+                  style={{
+                    margin: '24px 16px 0',
+                  }}
+                >
+                  <Routes>
+                    <Route
+                      path='/profile/:username'
+                      exact
+                      element={
+                        <UserProfile
+                          style={{
+                          padding: 24,
+                          minHeight: 360,
+                          background: colorBgContainer,
+                          }}
+                        />}
+                    />
+                    <Route
+                      path='/profile'
+                      exact
+                      element={
+                        <AccountPage
+                          style={{
+                          padding: 24,
+                          minHeight: 360,
+                          background: colorBgContainer,
+                          }}
+                        />}
+                    />
+                    <Route 
+                      path='/beweries/:breweryId'
+                      exact
+                      element={
+                        <SingleBrewery/>
+                      }
+                    />
+                    <Route
+                      path='/breweries'
+                      exact
+                      element={
+                        <SearchPage
+                          style={{
+                          padding: 24,
+                          minHeight: 360,
+                          background: colorBgContainer,
+                          }}
+                        />}
+                    />
+                    <Route
+                      path='/connect'
+                      exact
+                      element={
+                        <ConnectPage 
+                          style={{
+                          padding: 24,
+                          minHeight: 360,
+                          background: colorBgContainer,
+                          }}
+                        />}
+                    />
+                    <Route
+                      path='/signup'
+                      exact
+                      element={
+                        <SignupPage 
+                          style={{
+                          padding: 24,
+                          minHeight: 360,
+                          background: colorBgContainer,
+                          }}
+                        />}
+                    />
+                    <Route
+                      path='/'
+                      element={
+                        <HomePage 
+                          style={{
+                          padding: 24,
+                          minHeight: 360,
+                          background: colorBgContainer,
+                          }}
+                        />}
+                    />
+                  </Routes>
+                </Content>
+                {/* ends inner layout with footer */}
+                <Footer
+                  style={{
+                    textAlign: 'center',
+                  }}
+                />
+              </Layout>
+            </Router>
+          </Layout>
+        </ConfigProvider>
+      </UserProvider>
     </ApolloProvider>
   );
 }
