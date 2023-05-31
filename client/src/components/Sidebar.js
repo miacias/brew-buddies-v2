@@ -29,7 +29,7 @@ function Sidebar() {
         [
             {
             key: "/profile",
-            label: <Link to="/profile">Profile Page</Link>,
+            label: <Link to={`/profile/${userData?.username}`}>Profile Page</Link>,
             icon: userData?.profilePic ? <Avatar src={userData?.profilePic}/> : <Avatar icon={<UserOutlined />} />
             },
             {
