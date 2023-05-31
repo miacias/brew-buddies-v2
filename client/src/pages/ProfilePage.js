@@ -22,7 +22,13 @@ export function ProfilePage() {
   const { loading, error, data: userData, refetch } = useQuery(GET_USER, {
     variables: { username },
   });
-  const { loading: loadingFrnds, error: frndsErr, data: frndsData } = useQuery(GET_FRIENDS);
+  const friendsIdList = profileData?.friends.map(friend => {
+    return friend._id;
+  });
+  // console.log('friend list from profileData', friendsIdList);
+  const { loading: loadingFrnds, error: frndsErr, data: frndsData } = useQuery(GET_FRIENDS, {
+    variables: { friendsIdList }
+  });
   const [addFriend] = useMutation(ADD_FRIEND);
   const [removeFriend] = useMutation(REMOVE_FRIEND);
   const [removeFavBrewery] = useMutation(REMOVE_FAV_BREWERY);
@@ -31,6 +37,8 @@ export function ProfilePage() {
   const myData = useUserContext();
   // console.log(Auth.getProfile())
   const myId = Auth.getProfile()?.data?._id;
+  const token = Auth.getToken();
+  // console.log(Auth.isTokenExpired(token));
 
 
 
@@ -39,12 +47,17 @@ export function ProfilePage() {
     if (!loading && userData.user !== null) {
       setProfileData(userData.user);
     }
+    // console.log(profileData);
+    refetch();
+  }, [loading, error, userData]);
+
+
+  useEffect(() => {
     if (!loadingFrnds && frndsData !== null) {
       setFriendsData(frndsData);
     }
-    console.log(friendsData)
-    refetch();
-  }, [loading, error, userData, loadingFrnds, frndsErr, frndsData]);
+    // console.log(friendsData)
+  }, [loadingFrnds, frndsErr, frndsData])
 
 
   const handleFollow = async () => {

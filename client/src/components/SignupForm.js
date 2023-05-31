@@ -54,6 +54,7 @@ const Signup = () => {
     const { name, value } = event.target;
     setUserFormData({ ...userFormData, [name]: value });
   };
+
   const handleSelectChange = (value) => {
     setUserFormData({
       ...userFormData,
@@ -62,16 +63,16 @@ const Signup = () => {
   };
 
   const handleFormSubmit = async (event) => {
-    const preferNone = userFormData.pronouns;
-    if (preferNone) {
+    // const preferNone = userFormData.pronouns;
+    if (userFormData.pronouns === 'Prefer-not-to-say') {
       userFormData.pronouns = null;
     }
+    userFormData.username = userFormData.username.toLowerCase();
     try {
-      userFormData.username = userFormData.username.toLowerCase();
       const { data } = await addUser({
         variables: { ...userFormData },
       });
-
+      console.log(data);
       if (!data) {
         throw new Error("something went wrong!");
       }

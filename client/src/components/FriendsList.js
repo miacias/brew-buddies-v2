@@ -5,7 +5,7 @@ import { UserOutlined } from '@ant-design/icons';
 
 
 export default function FriendsList(loadingFrnds, frndsErr, frndsData) {
-    // console.log(loadingFrnds)
+    // console.log(frndsData)
     const data = [
         {
           title: 'Ant Design Title 1',
