@@ -46,6 +46,15 @@ export function ProfilePage() {
     }
   }, [profileData]);
 
+    // refetch friend data when username changes
+    useEffect(() => {
+      refetch();
+      if (profileData) {
+        const friendsIdList = profileData.friends.map((friend) => friend._id);
+        fetchFriends(friendsIdList);
+      }
+    }, [username, profileData]);
+
   // gets and sets friend user data for given profile
   const fetchFriends = async (friendsIdList) => {
     try {

@@ -2,6 +2,8 @@ import React from "react";
 import { Avatar, List } from 'antd';
 import { UserOutlined } from '@ant-design/icons';
 import { Link } from 'react-router-dom';
+import { ReactComponent as EmptyBin } from './EmptyBin.svg';
+
 
 
 export default function FriendsList(friendsData) {
@@ -19,6 +21,7 @@ export default function FriendsList(friendsData) {
                 <List
                     itemLayout="horizontal"
                     dataSource={friendsData.friends}
+                    locale={{emptyText: <div><EmptyBin/><p>Friends list empty</p></div>}}
                     renderItem={(item, index) => (
                     <List.Item>
                         <List.Item.Meta
