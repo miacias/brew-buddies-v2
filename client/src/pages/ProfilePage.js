@@ -161,16 +161,17 @@ export function ProfilePage() {
                 <h2 style={{fontSize: '24px'}}>{userData.user.username}</h2>
                 <h3 style={{fontSize: '20px'}}>{userData.user.pronouns}</h3>
                 <p>{userData.user.bio}</p>
-                {/* show edit profile form if logged in User ID matches profile page ID */}
+                {/* consider replacing in-line edit form with modal form */}
+                {showForm && myId === profileData?._id && <EditUserForm />}
+                {/* shows edit profile form if logged in User ID matches profile page ID */}
                 {myId === profileData?._id && (
                   <Button onClick={() => setShowForm(!showForm)}>
                     {showForm ? "Close" : "Edit Profile"}
                   </Button>
                 )}
-                {/* consider replacing in-line edit form with modal form */}
-                {showForm && myId === profileData?._id && <EditUserForm />}
-                {myId !== profileData?._id && myData && (
-                  myData.user?.friends.some((friend) => friend.username === profileData.username) ? (
+                {/* shows follow/unfollow if logged in User ID is viewing a different profile page */}
+                {myId !== profileData?._id && myData && friendsData && (
+                  myData.friends.some((friend) => friend._id === profileData._id) ? (
                     <Button onClick={() => handleUnfollow(profileData._id)}>
                       Unfollow
                     </Button>
