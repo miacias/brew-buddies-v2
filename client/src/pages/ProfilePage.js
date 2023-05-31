@@ -31,7 +31,6 @@ export function ProfilePage() {
   const myId = Auth.getProfile()?.data?._id;
 
 
-
   // sets page data from URL and DB
   useEffect(() => {
     if (!loading && userData && userData.user) {
@@ -66,9 +65,10 @@ export function ProfilePage() {
     try {
       const { data } = await addFriend({
         variables: {
-          friendId: new ObjectId(userData._id),
+          friendId: new ObjectId(profileData._id),
         },
       });
+      console.log(data)
       if (!data) {
         throw new Error("You have no friends");
       }
@@ -170,8 +170,8 @@ export function ProfilePage() {
                 {/* consider replacing in-line edit form with modal form */}
                 {showForm && <EditUserForm />}
                 {myId !== profileData?._id && myData && (
-                  myData.user?.friends.some((friend) => friend.username === userData.username) ? (
-                    <Button onClick={() => handleUnfollow(userData._id)}>
+                  myData.user?.friends.some((friend) => friend.username === profileData.username) ? (
+                    <Button onClick={() => handleUnfollow(profileData._id)}>
                       Unfollow
                     </Button>
                   ) : (
