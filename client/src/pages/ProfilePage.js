@@ -1,19 +1,19 @@
 import React , { useEffect, useState } from "react";
-import { useParams, useNavigate, Link } from "react-router-dom";
+import { useParams } from "react-router-dom";
 import { useUserContext } from '../components/UserProvider';
-import { Row, Col, Space, Avatar, Divider, Radio, Tabs, Button, Card } from "antd";
+import { Space, Avatar, Divider, Tabs, Button } from "antd";
 import { UserOutlined } from '@ant-design/icons'
-import { useMutation, useQuery } from "@apollo/client";
+import { useApolloClient, useMutation, useQuery } from "@apollo/client";
 import { GET_USER, GET_FRIENDS } from "../utils/queries";
 import { ADD_FRIEND, REMOVE_FRIEND, REMOVE_FAV_BREWERY } from "../utils/mutations";
-import { format_date, format_timestamp } from '../utils/formatters';
+import { format_date } from '../utils/formatters';
 import FriendsList from "../components/FriendsList";
 import { EditUserForm } from "../components/EditUserForm";
 import Auth from "../utils/auth";
 const ObjectId = require("bson-objectid");
 
 export function ProfilePage() {
-  // const navigate = useNavigate();
+  const client = useApolloClient();
   const { username } = useParams();
   const [profileData, setProfileData] = useState(null);
   const [friendsData, setFriendsData] = useState(null);
@@ -22,43 +22,45 @@ export function ProfilePage() {
   const { loading, error, data: userData, refetch } = useQuery(GET_USER, {
     variables: { username },
   });
-  const friendsIdList = profileData?.friends.map(friend => {
-    return friend._id;
-  });
-  // console.log('friend list from profileData', friendsIdList);
-  const { loading: loadingFrnds, error: frndsErr, data: frndsData } = useQuery(GET_FRIENDS, {
-    variables: { friendsIdList }
-  });
   const [addFriend] = useMutation(ADD_FRIEND);
   const [removeFriend] = useMutation(REMOVE_FRIEND);
   const [removeFavBrewery] = useMutation(REMOVE_FAV_BREWERY);
 
   // gets loggedIn user's ID
   const myData = useUserContext();
-  // console.log(Auth.getProfile())
   const myId = Auth.getProfile()?.data?._id;
-  const token = Auth.getToken();
-  // console.log(Auth.isTokenExpired(token));
 
 
 
   // sets page data from URL and DB
   useEffect(() => {
-    if (!loading && userData.user !== null) {
+    if (!loading && userData && userData.user) {
       setProfileData(userData.user);
     }
-    // console.log(profileData);
     refetch();
-  }, [loading, error, userData]);
-
+  }, [loading, error, userData, profileData, refetch]);
 
   useEffect(() => {
-    if (!loadingFrnds && frndsData !== null) {
-      setFriendsData(frndsData);
+    if (profileData && profileData.friends && profileData.friends.length > 0) {
+      const friendsIdList = profileData.friends.map((friend) => friend._id);
+      fetchFriends(friendsIdList);
     }
-    // console.log(friendsData)
-  }, [loadingFrnds, frndsErr, frndsData])
+  }, [profileData]);
 
+
+  const fetchFriends = async (friendsIdList) => {
+    try {
+      const { data } = await client.query({
+        query: GET_FRIENDS,
+        variables: { ids: friendsIdList },
+      });
+      if (data && data?.getFriends) {
+        setFriendsData(data.getFriends);
+      }
+    } catch (err) {
+      console.error(err);
+    }
+  }
 
   const handleFollow = async () => {
     try {
@@ -84,6 +86,7 @@ export function ProfilePage() {
           friendId: new ObjectId(friendId),
         },
       });
+      return data;
       // refetch();
       // navigate("/profile");
     } catch (err) {
@@ -99,15 +102,17 @@ export function ProfilePage() {
           breweryId: breweryId,
         },
       });
-      setBreweryList((current) => {
-        // Create a new set of breweries excluding the deleted brewery
-        const updatedBreweries = new Set(
-          [...current].filter((brewery) => brewery.id !== breweryId)
-        );
-        return updatedBreweries;
-      });
+      if (data) {
+        setBreweryList((current) => {
+          // creates a new set of breweries excluding the deleted brewery
+          const updatedBreweries = new Set(
+            [...current].filter((brewery) => brewery.id !== breweryId)
+          );
+          return updatedBreweries;
+        });
+      }
     } catch (err) {
-      console.log(err);
+      console.error(err);
     }
   };
 
@@ -126,9 +131,7 @@ export function ProfilePage() {
       key: 1,
       children: 
         <FriendsList 
-          loadingFrnds={loadingFrnds} 
-          frndsErr={frndsErr} 
-          frndsData={frndsData}
+          friends={friendsData}
         />
     },
     {

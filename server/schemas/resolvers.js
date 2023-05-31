@@ -42,11 +42,9 @@ const resolvers = {
     },
     // gets list of friends for one user
     getFriends: async (parent, { ids }) => {
-      console.log('friends ID array:', ids);
       try {
         if (ids && ids.length) {
           const friendsList = await User.find({ _id: { $in: ids } });
-          console.log('DB friends:', friendsList);
           return friendsList;
         }
         return [];
