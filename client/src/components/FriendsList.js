@@ -19,7 +19,7 @@ export default function FriendsList(friendsData) {
         <>
             {friendsData?.friends ? (
                 <List
-                    pagination={friendsData.friends.length ? {
+                    pagination={friendsData.friends.length > 3 ? {
                         position: 'bottom',
                         align: 'center',
                         defaultCurrent: 1,
@@ -36,8 +36,9 @@ export default function FriendsList(friendsData) {
                             ? <Link to={`/profile/${item.username}`}><AvatarFromURL url={item.profilePic} /></Link> 
                             : <Link to={`/profile/${item.username}`}><Avatar icon={<UserOutlined />} /></Link>}
                         title={<Link to={`/profile/${item.username}`}>{item.username}</Link>}
-                        description={item.bio ? `${item.bio} Reviews: ${item.reviewCount}` : `Reviews: ${item.reviewCount}`}
+                        description={item.bio ? item.bio : ''}
                         />
+                        <div>{`${item.reviewCount} reviews`}</div>
                     </List.Item>
                     )}
                 />
