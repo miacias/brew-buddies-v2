@@ -42,7 +42,6 @@ const resolvers = {
     },
     // gets list of friends for one user
     getFriends: async (parent, { ids }) => {
-      // console.log('friends ID array:', ids);
       try {
         if (ids && ids.length) {
           const friendsList = await User.find({ _id: { $in: ids } });
@@ -51,7 +50,7 @@ const resolvers = {
         return [];
       } catch (err) {
         console.error(err);
-        throw new Error('Failed to fetch friends list');
+        throw new Error('Failed to fetch friends list.');
       }
     },
     // shows all reviews from most recent first, 50 at a time

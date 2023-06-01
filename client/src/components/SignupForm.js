@@ -23,6 +23,7 @@ const formItemLayout = {
     },
   },
 };
+
 const tailFormItemLayout = {
   wrapperCol: {
     xs: {
@@ -35,10 +36,10 @@ const tailFormItemLayout = {
     },
   },
 };
+
 const Signup = () => {
   const [form] = Form.useForm();
-
-  // set initial form state
+  // set initial State of required form data
   const [userFormData, setUserFormData] = useState({
     username: "",
     email: "",
@@ -54,6 +55,7 @@ const Signup = () => {
     const { name, value } = event.target;
     setUserFormData({ ...userFormData, [name]: value });
   };
+
   const handleSelectChange = (value) => {
     setUserFormData({
       ...userFormData,
@@ -62,28 +64,27 @@ const Signup = () => {
   };
 
   const handleFormSubmit = async (event) => {
-    const preferNone = userFormData.pronouns;
-    if (preferNone) {
+    // no pronouns = null
+    if (userFormData.pronouns === 'Prefer-not-to-say') {
       userFormData.pronouns = null;
     }
+    userFormData.username = userFormData.username.toLowerCase();
+    // adds user to DB
     try {
-      userFormData.username = userFormData.username.toLowerCase();
       const { data } = await addUser({
         variables: { ...userFormData },
       });
-
       if (!data) {
         throw new Error("something went wrong!");
       }
-
+      // logs in new user
       Auth.login(data.addUser.token);
     } catch (err) {
       console.error(err);
       setShowAlert(true);
       form.resetFields();
-
     }
-
+    // resets form to empty
     setUserFormData({
       email: "",
       password: "",
@@ -96,6 +97,7 @@ const Signup = () => {
       birthday: "",
     });
   };
+
   return (
     <Form
       {...formItemLayout}
@@ -318,4 +320,5 @@ const Signup = () => {
     </Form>
   );
 };
+
 export default Signup;

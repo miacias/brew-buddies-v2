@@ -80,6 +80,7 @@ export const GET_FRIENDS = gql`
         profilePic
         username
         reviewCount
+        bio
         }
     }
 `;
