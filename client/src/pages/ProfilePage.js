@@ -22,14 +22,13 @@ export function ProfilePage() {
   const { loading, error, data: userData, refetch } = useQuery(GET_USER, {
     variables: { username },
   });
-  const [addFriend] = useMutation(ADD_FRIEND);
-  const [removeFriend] = useMutation(REMOVE_FRIEND);
+  const [follow] = useMutation(ADD_FRIEND);
+  const [unfollow] = useMutation(REMOVE_FRIEND);
   const [removeFavBrewery] = useMutation(REMOVE_FAV_BREWERY);
 
   // gets loggedIn user's ID
   const myData = useUserContext();
   const myId = Auth.getProfile()?.data?._id;
-
 
   // sets page data from URL and DB
   useEffect(() => {
@@ -39,6 +38,7 @@ export function ProfilePage() {
     refetch();
   }, [loading, error, userData, profileData, refetch]);
 
+  // initiates friends list DB fetch for profile page once profile data is available
   useEffect(() => {
     if (profileData && profileData.friends && profileData.friends.length > 0) {
       const friendsIdList = profileData.friends.map((friend) => friend._id);
@@ -46,7 +46,16 @@ export function ProfilePage() {
     }
   }, [profileData]);
 
+    // refetch friend data when username changes
+    useEffect(() => {
+      refetch();
+      if (profileData) {
+        const friendsIdList = profileData.friends.map((friend) => friend._id);
+        fetchFriends(friendsIdList);
+      }
+    }, [username, profileData]);
 
+  // gets and sets friend user data for given profile
   const fetchFriends = async (friendsIdList) => {
     try {
       const { data } = await client.query({
@@ -63,7 +72,7 @@ export function ProfilePage() {
 
   const handleFollow = async () => {
     try {
-      const { data } = await addFriend({
+      const { data } = await follow({
         variables: {
           friendId: new ObjectId(profileData._id),
         },
@@ -81,7 +90,7 @@ export function ProfilePage() {
 
   const handleUnfollow = async (friendId) => {
     try {
-      const { data } = await removeFriend({
+      const { data } = await unfollow({
         variables: {
           friendId: new ObjectId(friendId),
         },
@@ -161,16 +170,17 @@ export function ProfilePage() {
                 <h2 style={{fontSize: '24px'}}>{userData.user.username}</h2>
                 <h3 style={{fontSize: '20px'}}>{userData.user.pronouns}</h3>
                 <p>{userData.user.bio}</p>
-                {/* show edit form if logged in User ID matches profile page ID */}
+                {/* consider replacing in-line edit form with modal form */}
+                {showForm && myId === profileData?._id && <EditUserForm />}
+                {/* shows edit profile form if logged in User ID matches profile page ID */}
                 {myId === profileData?._id && (
                   <Button onClick={() => setShowForm(!showForm)}>
                     {showForm ? "Close" : "Edit Profile"}
                   </Button>
                 )}
-                {/* consider replacing in-line edit form with modal form */}
-                {showForm && <EditUserForm />}
-                {myId !== profileData?._id && myData && (
-                  myData.user?.friends.some((friend) => friend.username === profileData.username) ? (
+                {/* shows follow/unfollow if logged in User ID is viewing a different profile page */}
+                {myId !== profileData?._id && myData && friendsData && (
+                  myData.friends.some((friend) => friend._id === profileData._id) ? (
                     <Button onClick={() => handleUnfollow(profileData._id)}>
                       Unfollow
                     </Button>
