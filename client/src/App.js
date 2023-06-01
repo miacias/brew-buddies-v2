@@ -7,7 +7,7 @@ import HomePage from './pages/HomePage';
 import ConnectPage from './pages/ConnectPage';
 import SignupPage from './pages/SignupPage';
 import SearchPage from './pages/SearchPage';
-import SingleBrewery from './pages/SingleBrewery';
+import BreweryPage from './pages/BreweryPage';
 import { UserProfile } from './pages/UserProfile';
 import { ProfilePage } from './pages/ProfilePage';
 import { AccountPage } from './pages/AccountPage';
@@ -107,7 +107,7 @@ function App() {
                       path='/beweries/:breweryId'
                       exact
                       element={
-                        <SingleBrewery/>
+                        <BreweryPage/>
                       }
                     />
                     <Route

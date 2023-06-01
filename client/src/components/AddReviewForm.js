@@ -42,7 +42,7 @@ export default function AddReviewForm({ showForm, setShowForm, onReviewAdded }) 
             if (!data) {
                 throw new Error('Unable to add review.');
             }  
-            ////passed as a prop from singleBrewery 
+            ////passed as a prop from BreweryPage 
             onReviewAdded(); 
         } catch (err) {
           console.error(err);

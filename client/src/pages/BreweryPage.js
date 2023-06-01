@@ -12,32 +12,34 @@ import formatZipCode from "../utils/zipFormat";
 import breweryType from '../utils/breweryType';
 import { ADD_FAV_BREWERY, REMOVE_FAV_BREWERY } from "../utils/mutations";
 import { GET_ME, BREWERY_REVIEW } from '../utils/queries';
+import { useUserContext } from '../components/UserProvider';
 import ReviewCard from "../components/ReviewCard";
 import AddReviewForm from '../components/AddReviewForm';
 
 
-export default function SingleBrewery() {
+export default function BreweryPage() {
   const { breweryId } = useParams();
   const [breweryData, setBreweryData] = useState();
   const [showForm, setShowForm] = useState(false);
   const [loggedInUser, setLoggedInUser] = useState(null);
   const [favorite, setFavorite] = useState();
+  const myData = useUserContext();
 
   // adds or removes brewery from user Favorites list
-  const [addFavBrewery, { error }] = useMutation(ADD_FAV_BREWERY);
-  const [removeFavBrewery, { error: removeError }] = useMutation(REMOVE_FAV_BREWERY);
+  const [addFavBrewery, { error: addFavErr }] = useMutation(ADD_FAV_BREWERY);
+  const [removeFavBrewery, { error: removeFavErr }] = useMutation(REMOVE_FAV_BREWERY);
   // loads all reviews for this brewery
   const { loading: loadingReview, data: reviewData, refetch } = useQuery(BREWERY_REVIEW, { variables: { breweryId }});
   // loads logged in user data
-  const { loading: loadingMe, error: meError, data: meData, refetch: refetchMe } = useQuery(GET_ME);
+  // const { loading: loadingMe, error: meError, data: meData, refetch: refetchMe } = useQuery(GET_ME);
 
 
   // heart icon is filled if brewery on screen is in the favorites list of the user viewing the page
   const handleHeartFill = async (brewery) => {
-    const myFaves = meData?.me?.favBreweries;
+    const myFavesArr = myData?.favBreweries;
     const breweryId = brewery?.id.toString();
-    if (myFaves && myFaves.length > 0) {
-      const foundMatch = myFaves.find((favMatch) => favMatch === breweryId)
+    if (myFavesArr && myFavesArr.length > 0) {
+      const foundMatch = myFavesArr.find((favMatch) => favMatch === breweryId)
       if (foundMatch) {
         return setFavorite(true);
       } else {
@@ -48,10 +50,10 @@ export default function SingleBrewery() {
 
   // checks if user data is loaded then fills in the favorite heart or not
   useEffect(() => {
-    if(meData) {
+    if(myData) {
       handleHeartFill(breweryData);
     }
-  }, [meData, breweryData]);
+  }, [myData, breweryData]);
 
   // calculates star review average
   const calculateAverage = (loadingReview, reviewData) => {
@@ -100,17 +102,17 @@ export default function SingleBrewery() {
   };
 
   // adds review to brewery page and to user profile
-  const handleAddFavBrewery = async (event) => {
+  const handleAddFavBrewery = async () => {
     try {
       const { data } = await addFavBrewery({
         variables: {
-          breweryId: breweryId,
+          brewery: breweryId,
         },
       });
       if (!data) {
         throw new Error('Something went wrong!');
       }
-        setFavorite(true);
+      setFavorite(true);
     } catch (err) {
       console.error(err);
     }

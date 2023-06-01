@@ -4,7 +4,7 @@ export default function breweryType(type) {
     const firstLetterCaps = type.charAt(0).toUpperCase() + type.slice(1);
     switch (type) {
         case 'micro':
-            return `${firstLetterCaps}! Craft brewery, the most common type. For example, Samual Adams is still considered a micro brewery!`;
+            return `${firstLetterCaps}! Craft brewery, the most common type. For example, Samuel Adams is still considered a micro brewery!`;
         case 'nano':
             return `${firstLetterCaps}! An extremely small brewery which typically only distributes locally.`;
         case 'regional':

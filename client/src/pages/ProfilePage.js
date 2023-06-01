@@ -8,6 +8,7 @@ import { GET_USER, GET_FRIENDS } from "../utils/queries";
 import { ADD_FRIEND, REMOVE_FRIEND, REMOVE_FAV_BREWERY } from "../utils/mutations";
 import { format_date } from '../utils/formatters';
 import FriendsList from "../components/FriendsList";
+import BreweryFavorites from "../components/BreweryFavorites";
 import { EditUserForm } from "../components/EditUserForm";
 import Auth from "../utils/auth";
 const ObjectId = require("bson-objectid");
@@ -138,15 +139,12 @@ export function ProfilePage() {
     {
       label: `Friends (${profileData?.friendCount})`,
       key: 1,
-      children: 
-        <FriendsList 
-          friends={friendsData}
-        />
+      children: <FriendsList friends={friendsData} />
     },
     {
       label: 'Favorites!',
       key: 2,
-      children: 'favorites stuff'
+      children: <BreweryFavorites breweries={breweryList}/>
     },
     {
       label: 'Wish List!',

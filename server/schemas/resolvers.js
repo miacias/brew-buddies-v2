@@ -195,6 +195,7 @@ const resolvers = {
     },
     // adds brewery to user favorites list
     addFavBrewery: async (parent, { brewery }, context) => {
+      console.log('hello fav');
       try {
         if (context.user) {
           const newFavBrewery = await User.findOneAndUpdate(
