@@ -1,48 +1,53 @@
 // using both "loading card" and "inner card" components from ANT.  The Meta tag comes from "loading card" is attached to an "inner card"
 import { Link } from 'react-router-dom';
-import { Avatar, Card, Rate, Button } from 'antd';
+import { Avatar, Card, Rate, Tooltip } from 'antd';
+import { format_timestamp } from '../utils/formatters';
+
 const { Meta } = Card;
 
 
 export default function ReviewCard({ oneReview, breweryData }) {
   let urlParams = window.location.pathname;
 
+  // custom avatar: Ant Design UI v5.4 does not support built-in avatars from URL
+  const AvatarFromURL = ({ url, ...props }) => {
+    return (
+    <Avatar {...props} src={url} />
+    );
+  };
+
+
   return (
-    <Card>
-      {console.log('hello from cards')}
-      <Meta
-            avatar={<Avatar src="https://xsgames.co/randomusers/avatar.php?g=pixel&key=1" />}
-            title={oneReview.author.username}
-            description={oneReview.createdAt}
-          />
-      {/* if on home page, render card with brewery title */}
-      {urlParams === '/' ?
-        <Card
-        style={{
-          marginTop: 16,
-        }}
-        type="inner"
-        title={<a href={breweryData.website_url ? breweryData.website_url : ''}>{breweryData?.name}</a>}
-        >
-          <Rate disabled defaultValue={oneReview.rating}/>
-          <p>{oneReview.text}</p>
-        </Card>
-      : // else render card with brewery star rating as title
-        <Card
-          style={{
-            marginTop: 16,
-          }}
-          type="inner"
-          title={<Rate disabled defaultValue={oneReview.rating}/>}
-        >
-          <p>{oneReview.text}</p>
-        </Card>
-      }
-      <Button >
-        <Link to={`/profile/${oneReview.author}`}>
-          View Profile!
-        </Link>
-      </Button>
-    </Card>
+      <Card>
+        <Meta
+          avatar={<Link to={`/profile/${oneReview.author.username}`}><AvatarFromURL url={oneReview.author.profilePic} /></Link>}
+          title={<Tooltip title='View Profile'><Link to={`/profile/${oneReview.author.username}`}>{oneReview.author.username}</Link></Tooltip>}
+          description={format_timestamp(oneReview.createdAt)}
+        />
+        {/* if on HomePage, render card with brewery title */}
+        {urlParams === '/' ?
+          <Card
+            type="inner"
+            title={<a href={breweryData.website_url ? breweryData.website_url : ''}>{breweryData?.name}</a>}
+            style={{
+              marginTop: 16,
+            }}
+          >
+            <Rate disabled defaultValue={oneReview.rating}/>
+            <p>{oneReview.text}</p>
+          </Card>
+        :
+          // if on BreweryPage render card with brewery star rating as title
+            <Card
+              type="inner"
+              title={<Rate disabled defaultValue={oneReview.rating}/>}
+              style={{
+                marginTop: 16,
+              }}
+            >
+              <p>{oneReview.text}</p>
+            </Card>
+        }
+      </Card>
   )
 };
