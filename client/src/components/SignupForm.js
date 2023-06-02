@@ -1,6 +1,6 @@
 import { useState } from "react";
 import dayjs from "dayjs";
-import { Button, DatePicker, Form, Input, Select } from "antd";
+import { Button, DatePicker, Form, Input, Select, Alert } from "antd";
 import { useMutation } from "@apollo/client";
 import { ADD_USER } from "../utils/mutations";
 import Auth from "../utils/auth";
@@ -67,7 +67,7 @@ const Signup = () => {
   const handleFormSubmit = async (event) => {
     const formattedBirthday = dayjs(userFormData.birthday).format("YYYY-MM-DD");
     if (calculateAgeLimit(formattedBirthday) === false) {
-      return; // prevents underage from joining
+      return setShowAlert(true); // prevents underage from joining
     }
     // no pronouns = null
     if (userFormData.pronouns === 'Prefer-not-to-say') {
@@ -128,6 +128,7 @@ const Signup = () => {
       }}
       scrollToFirstError
     >
+      {showAlert && <Alert type="error" message="You may not use this site while under age 21." banner />}
       <Form.Item
         name="username"
         label="Username"
