@@ -58,7 +58,7 @@ export default function BreweryPage() {
 
   // calculates star review average
   const calculateAverage = (loadingReview, reviewData) => {
-    return 1;
+    // return 1;
     const ratings = [];
     let average;
     let totalReviews;
