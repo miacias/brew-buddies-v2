@@ -9,7 +9,6 @@ export default function BreweryWishlist({breweryWishes}) {
 
     return (
         <>
-        {console.log('wish list', breweryWishes)}
             {breweryWishes && breweryWishes?.length > 0 ? (
                 <List
                     pagination={breweryWishes.length > 3 ? {

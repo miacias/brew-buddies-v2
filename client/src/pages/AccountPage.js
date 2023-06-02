@@ -67,7 +67,7 @@ export function AccountPage() {
         return updatedBreweries;
       });
     } catch (err) {
-      console.log(err);
+      console.error(err);
     }
   };
 

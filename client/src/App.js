@@ -104,7 +104,7 @@ function App() {
                         />}
                     /> */}
                     <Route 
-                      path='/beweries/:breweryId'
+                      path='/breweries/:breweryId'
                       exact
                       element={
                         <BreweryPage/>
