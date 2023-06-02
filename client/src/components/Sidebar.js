@@ -50,23 +50,23 @@ function Sidebar() {
 
     return (
         <Sider
-        breakpoint="lg"
-        collapsedWidth="0"
-        onBreakpoint={(broken) => {
-            // console.log(broken);
-        }}
-        onCollapse={(collapsed, type) => {
-            // console.log(collapsed, type);
-        }}
+            breakpoint="lg"
+            collapsedWidth="0"
+            onBreakpoint={(broken) => {
+                // console.log(broken);
+            }}
+            onCollapse={(collapsed, type) => {
+                // console.log(collapsed, type);
+            }}
         >
-        <div className="logo" />
-        {/* <Space direction='vertical'> */}
-            <Menu
-            theme="dark"
-            mode="inline"
-            defaultSelectedKeys={window.location.pathname} // highlights based on when pathname matches item key
-            items={items}
-            />
+            <div className="logo" />
+            {/* <Space direction='vertical'> */}
+                <Menu
+                    theme="dark"
+                    mode="inline"
+                    defaultSelectedKeys={window.location.pathname} // highlights based on when pathname matches item key
+                    items={items}
+                />
         </Sider>
     )
 };

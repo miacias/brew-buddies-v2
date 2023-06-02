@@ -34,6 +34,7 @@ const typeDefs = gql`
   type Review {
     _id: ID
     createdAt: String
+    updatedAt: String
     author: User
     text: String
     rating: Int!
@@ -43,10 +44,6 @@ const typeDefs = gql`
   type ReviewCard {
     review: Review
     author: User
-  }
-
-  type FriendsList {
-    friends: [User]
   }
 
   type Auth {
@@ -80,7 +77,7 @@ const typeDefs = gql`
     editReview(
       reviewId: ID!
       text: String
-      rating: String!
+      rating: Int!
       brewery: String
     ): Review
     follow(friendId: ID!): User

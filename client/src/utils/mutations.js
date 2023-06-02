@@ -107,37 +107,42 @@ export const REMOVE_WISH_BREWERY = gql`
 
 export const ADD_REVIEW = gql`
   mutation addReview(
-    $starRating: String!
-    $reviewText: String
-    $breweryId: String
+    $rating: Int!
+    $text: String
+    $brewery: String
   ) {
     addReview(
-      starRating: $starRating
-      reviewText: $reviewText
-      breweryId: $breweryId
+      rating: $rating
+      text: $text
+      brewery: $brewery
     ) { 
-      user {
+      author {
         _id
+        username
+      }
+      review {
+        _id
+        text
+        rating
+        brewery
       }
     }
   }
 `;
 
 export const EDIT_REVIEW = gql`
-  mutation editReview($reviewId: ID!, $starRating: String, $reviewText: String) {
+  mutation editReview($reviewId: ID!, $rating: Int, $text: String) {
     editReview(
       reviewId: $reviewId
-      starRating: $starRating
-      reviewText: $reviewText
+      rating: $rating
+      text: $text
     ) {
       _id
-      reviewText
-      starRating
-      reviewAuthor
+      text
+      rating
+      author
       createdAt
-      breweryId {
-        _id
-      }
+      brewery
     }
   }
 `;

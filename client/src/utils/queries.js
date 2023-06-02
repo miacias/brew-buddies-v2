@@ -104,7 +104,7 @@ export const ALL_REVIEWS = gql`
     }
 `;
 
-export const BREWERY_REVIEW = gql`
+export const BREWERY_REVIEWS = gql`
     query Review($breweryId: String) {
         reviewsByBrewery(breweryId: $breweryId) {
             _id
