@@ -99,6 +99,7 @@ export const ALL_REVIEWS = gql`
                 reviewCount
             }
             createdAt
+            updatedAt
             brewery
         }
     }
@@ -118,6 +119,7 @@ export const BREWERY_REVIEWS = gql`
                 reviewCount
             }
             createdAt
+            updatedAt
             brewery
         }
     }

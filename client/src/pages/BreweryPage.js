@@ -39,7 +39,6 @@ export default function BreweryPage() {
   // heart icon is filled if brewery on screen is in the favorites list of the user viewing the page
   const handleHeartFill = async (brewery) => {
     const myFavesArr = myData?.favBreweries;
-    const breweryId = brewery?.id.toString();
     if (myFavesArr && myFavesArr.length > 0) {
       const foundMatch = myFavesArr.find((favMatch) => favMatch === breweryId)
       if (foundMatch) {
@@ -59,6 +58,7 @@ export default function BreweryPage() {
 
   // calculates star review average
   const calculateAverage = (loadingReview, reviewData) => {
+    return 1;
     const ratings = [];
     let average;
     let totalReviews;
@@ -199,7 +199,7 @@ export default function BreweryPage() {
                 <p>{breweryData?.city}, {breweryData?.state} {breweryData.postal_code && (formatZipCode(breweryData?.postal_code))}</p>
                   <Space.Compact block>
                     {/* star ratings! */}
-                    {!loadingReview && reviewData.reviewsByBrewery && (
+                    {!loadingReview && reviewData && (
                     <Tooltip title={`${calculateAverage(loadingReview, reviewData)[1]} ratings!`}>
                       <Button 
                         type={showForm ? 'primary': 'default'}
@@ -274,7 +274,8 @@ export default function BreweryPage() {
         {/* <div>Google Maps API here</div> */}
         <ul>
           {/* creates Review card based on total number of reviews possible */}
-          {!loadingReview && reviewData.reviewsByBrewery && (
+          {console.log(reviewData)}
+          {!loadingReview && reviewData?.reviewsByBrewery && (
             <>
             {reviewData.reviewsByBrewery.map((oneReview) => {
               return <ReviewCard 

@@ -69,8 +69,10 @@ const resolvers = {
     reviewsByBrewery: async (parent, { breweryId }) => {
       try {
         const reviewSet = await Review.find({
-          breweryId,
-        }).sort({ createdAt: -1 });
+          brewery: breweryId,
+        })
+          .sort({ createdAt: -1 })
+          .populate('author');
         return reviewSet;
       } catch (err) {
         console.error(err);
@@ -195,7 +197,6 @@ const resolvers = {
     },
     // adds brewery to user favorites list
     addFavBrewery: async (parent, { brewery }, context) => {
-      console.log('hello fav');
       try {
         if (context.user) {
           const newFavBrewery = await User.findOneAndUpdate(

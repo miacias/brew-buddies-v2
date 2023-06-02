@@ -9,9 +9,10 @@ export default function ReviewCard({ oneReview, breweryData }) {
 
   return (
     <Card>
+      {console.log('hello from cards')}
       <Meta
             avatar={<Avatar src="https://xsgames.co/randomusers/avatar.php?g=pixel&key=1" />}
-            title={oneReview.reviewAuthor}
+            title={oneReview.author.username}
             description={oneReview.createdAt}
           />
       {/* if on home page, render card with brewery title */}
@@ -23,8 +24,8 @@ export default function ReviewCard({ oneReview, breweryData }) {
         type="inner"
         title={<a href={breweryData.website_url ? breweryData.website_url : ''}>{breweryData?.name}</a>}
         >
-          <Rate disabled defaultValue={oneReview.starRating}/>
-          <p>{oneReview.reviewText}</p>
+          <Rate disabled defaultValue={oneReview.rating}/>
+          <p>{oneReview.text}</p>
         </Card>
       : // else render card with brewery star rating as title
         <Card
@@ -32,13 +33,13 @@ export default function ReviewCard({ oneReview, breweryData }) {
             marginTop: 16,
           }}
           type="inner"
-          title={<Rate disabled defaultValue={oneReview.starRating}/>}
+          title={<Rate disabled defaultValue={oneReview.rating}/>}
         >
-          <p>{oneReview.reviewText}</p>
+          <p>{oneReview.text}</p>
         </Card>
       }
       <Button >
-        <Link to={`/profile/${oneReview.reviewAuthor}`}>
+        <Link to={`/profile/${oneReview.author}`}>
           View Profile!
         </Link>
       </Button>
