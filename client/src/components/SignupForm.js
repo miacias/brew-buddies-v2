@@ -1,5 +1,6 @@
-import { AutoComplete, Button, Form, Input, Select } from "antd";
 import { useState } from "react";
+import dayjs from "dayjs";
+import { Button, DatePicker, Form, Input, Select } from "antd";
 import { useMutation } from "@apollo/client";
 import { ADD_USER } from "../utils/mutations";
 import Auth from "../utils/auth";
@@ -64,15 +65,20 @@ const Signup = () => {
   };
 
   const handleFormSubmit = async (event) => {
+    const formattedBirthday = dayjs(userFormData.birthday).format("YYYY-MM-DD");
+    if (calculateAgeLimit(formattedBirthday) === false) {
+      return; // prevents underage from joining
+    }
     // no pronouns = null
     if (userFormData.pronouns === 'Prefer-not-to-say') {
       userFormData.pronouns = null;
     }
+
     userFormData.username = userFormData.username.toLowerCase();
     // adds user to DB
     try {
       const { data } = await addUser({
-        variables: { ...userFormData },
+        variables: { ...userFormData, birthday: formattedBirthday },
       });
       if (!data) {
         throw new Error("something went wrong!");
@@ -98,6 +104,16 @@ const Signup = () => {
     });
   };
 
+  const calculateAgeLimit = (birthday) => {
+    birthday = new Date();
+    const ofAge = new Date().setFullYear(birthday.getFullYear() - 21);
+    if (birthday <= ofAge) {
+      return true;
+    } else {
+      return false;
+    }
+  }
+
   return (
     <Form
       {...formItemLayout}
@@ -112,6 +128,26 @@ const Signup = () => {
       }}
       scrollToFirstError
     >
+      <Form.Item
+        name="username"
+        label="Username"
+        tooltip="What do you want others to call you?"
+        rules={[
+          {
+            required: true,
+            message: "Please input your username!",
+            whitespace: true,
+          },
+        ]}
+      >
+        <Input
+          placeholder="Username"
+          name="username"
+          onChange={handleInputChange}
+          value={userFormData.username}
+        />
+      </Form.Item>
+
       <Form.Item
         name="email"
         label="E-mail"
@@ -187,41 +223,36 @@ const Signup = () => {
           value={userFormData.confirm}
         />
       </Form.Item>
-
       <Form.Item
-        name="username"
-        label="Username"
-        tooltip="What do you want others to call you?"
+        name='birthday-date-picker'
+        label='Birthday'
+        initialValue={''}
+        onChange={(date, dateString) =>
+          setUserFormData({ ...userFormData, birthday: dateString })
+        }
         rules={[
           {
             required: true,
-            message: "Please input your username!",
-            whitespace: true,
-          },
-        ]}
+            message: "Please select your birthday! This site is restricted to 21+.",
+            type: 'object',
+          }]}
       >
-        <Input
-          placeholder="Username"
-          name="username"
-          onChange={handleInputChange}
-          value={userFormData.username}
-        />
+        <DatePicker/>
       </Form.Item>
-
       <Form.Item
         name="profilePic"
         label="Image Link"
-        tooltip="Please give us a link for an image of you!"
+        tooltip="Links only please!"
         rules={[
           {
             required: false,
-            message: "Please give us a link for an image of you!",
+            message: "Please provide a link for an image of you!",
             whitespace: true,
           },
         ]}
       >
         <Input
-          placeholder="Image Link"
+          placeholder="Set your picture from a URL (.jpeg, .png)"
           name="profilePic"
           onChange={handleInputChange}
           value={userFormData.profilePic}
@@ -245,27 +276,7 @@ const Signup = () => {
           value={userFormData.postalCode}
         />
       </Form.Item>
-
-      <Form.Item
-        name="bio"
-        label="Bio"
-        rules={[
-          {
-            required: false,
-            message: "Please tell us a little about yourself!",
-          },
-        ]}
-      >
-        <Input.TextArea
-          placeholder="Bio"
-          name="bio"
-          onChange={handleInputChange}
-          value={userFormData.bio}
-          showCount
-          maxLength={250}
-        />
-      </Form.Item>
-
+      
       <Form.Item
         name="pronouns"
         label="Pronouns"
@@ -292,26 +303,26 @@ const Signup = () => {
           )}
         </Select>
       </Form.Item>
+
       <Form.Item
-        name="birthday"
-        label="Enter your birthday"
+        name="bio"
+        label="Bio"
         rules={[
           {
-            required: true,
-            message:
-              "Please enter your birthdate as MM/DD/YYYY, you must be 21 years of age to use this site.",
-            whitespace: true,
+            required: false,
+            message: "Please tell us a little about yourself!",
           },
         ]}
       >
-        <Input
-          placeholder="Birthday"
-          name="birthday"
+        <Input.TextArea
+          placeholder="Share a bit about yourself!"
+          name="bio"
           onChange={handleInputChange}
-          value={userFormData.birthday}
+          value={userFormData.bio}
+          showCount
+          maxLength={250}
         />
       </Form.Item>
-
       <Form.Item {...tailFormItemLayout}>
         <Button type="primary" htmlType="submit">
           Register
