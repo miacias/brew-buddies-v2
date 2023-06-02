@@ -16,7 +16,7 @@ const typeDefs = gql`
     favBreweries: [String]
     wishBreweries: [String]
     friends: [User]
-    friendCount: Int
+    followsCount: Int
   }
 
   input UpdateUser {

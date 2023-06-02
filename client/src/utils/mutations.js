@@ -52,7 +52,7 @@ export const EDIT_USER = gql`
         _id
         birthday
         email
-        friendCount
+        followsCount
         bio
         password
         postalCode
@@ -152,7 +152,7 @@ export const ADD_FRIEND = gql`
     follow(friendId: $friendId) {
       _id
       username
-      friendCount
+      followsCount
       friends {
         _id
       }
@@ -165,7 +165,7 @@ export const REMOVE_FRIEND = gql`
     unfollow(friendId: $friendId) {
       _id
       username
-      friendCount
+      followsCount
       friends {
         _id
         username

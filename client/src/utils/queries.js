@@ -7,7 +7,7 @@ export const GET_ME = gql`
         birthday
         email
         favBreweries
-        friendCount
+        followsCount
         friends {
             _id
         }
@@ -35,7 +35,7 @@ export const ALL_USERS = gql`
             email
             password
             birthday
-            friendCount
+            followsCount
             bio
             postalCode
             profilePic
@@ -55,7 +55,7 @@ export const GET_USER = gql`
         email
         password
         birthday
-        friendCount
+        followsCount
         bio
         postalCode
         profilePic

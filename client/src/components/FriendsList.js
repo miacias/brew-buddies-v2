@@ -42,7 +42,7 @@ export default function FriendsList(friendsData) {
                     )}
                 />
             ) : (
-                ''
+                <Empty image={Empty.PRESENTED_IMAGE_SIMPLE} description={'Not following anyone yet'} />
             )}
         </>
     )

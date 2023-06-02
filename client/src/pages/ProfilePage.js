@@ -9,6 +9,7 @@ import { ADD_FRIEND, REMOVE_FRIEND, REMOVE_FAV_BREWERY } from "../utils/mutation
 import { format_date } from '../utils/formatters';
 import FriendsList from "../components/FriendsList";
 import BreweryFavorites from "../components/BreweryFavorites";
+import BreweryWishlist from '../components/BreweryWishlist';
 import { EditUserForm } from "../components/EditUserForm";
 import Auth from "../utils/auth";
 import * as API from '../utils/OpenBreweryDbApi';
@@ -61,15 +62,18 @@ export function ProfilePage() {
   // tracks breweries lists
   useEffect(() => {
     if (profileData?.favBreweries && profileData?.favBreweries.length > 0) {
-      const fetchLists = async () => {
+      const fetchFaves = async () => {
         const data = await API.byManyIds(profileData.favBreweries);
         setBreweryFaves(data);
       }
-      fetchLists();
+      fetchFaves();
     }
     if (profileData?.wishBreweries && profileData?.wishBreweries.length > 0) {
-      const data = API.byManyIds(profileData.wishBreweries);
-      setBreweryWishes(data);
+      const fetchWishes = async () => {
+        const data = await API.byManyIds(profileData.wishBreweries);
+        setBreweryWishes(data);
+      }
+      fetchWishes();
     }
   }, [username, profileData])
 
@@ -150,25 +154,26 @@ export function ProfilePage() {
   // renders user friends, favorites, and wish lists
   const tabItems = [
     {
-      label: `Follows (${profileData?.friendCount})`,
+      label: `Follows (${profileData?.followsCount || 0})`,
       key: 1,
       children: <FriendsList friends={friendsData} />
     },
     {
-      label: `Favorites! (${breweryFaves?.length})`,
+      label: `Favorites! (${breweryFaves?.length || 0})`,
       key: 2,
       children: <BreweryFavorites breweries={breweryFaves} />
     },
     {
-      label: 'Wish List!',
+      label: `Wish List! (${breweryWishes?.length || 0})`,
       key: 3,
-      children: 'some wishes'
+      children: <BreweryWishlist breweryWishes={breweryWishes}/>
     },
   ];
 
   if (Auth.loggedIn()) {
     return (
       <>
+      {console.log(profileData)}
         {userData?.user && !loading && (
           <>
             <Space direction='horizontal' size={16}>

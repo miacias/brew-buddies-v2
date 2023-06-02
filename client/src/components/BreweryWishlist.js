@@ -4,22 +4,23 @@ import { Link } from 'react-router-dom';
 
 
 
-export default function BreweryFavorites(breweryFaves) {
+export default function BreweryWishlist({breweryWishes}) {
 
 
     return (
         <>
-            {breweryFaves?.breweries?.length > 0 ? (
+        {console.log('wish list', breweryWishes)}
+            {breweryWishes && breweryWishes?.length > 0 ? (
                 <List
-                    pagination={breweryFaves.breweries.length > 3 ? {
+                    pagination={breweryWishes.length > 3 ? {
                         position: 'bottom',
                         align: 'center',
                         defaultCurrent: 1,
                         pageSize: 3
                     } : ''}
                     itemLayout="horizontal"
-                    dataSource={breweryFaves.breweries}
-                    locale={{emptyText: <Empty image={Empty.PRESENTED_IMAGE_SIMPLE} description={'No favorites yet'} />}}
+                    dataSource={breweryWishes}
+                    locale={{emptyText: <Empty image={Empty.PRESENTED_IMAGE_SIMPLE} description={'No saved places yet'} />}}
                     renderItem={(item, index) => (
                     <List.Item actions={[item.website_url ? <Link to={item.website_url}>visit site</Link> : '', <Link to={`/breweries/${item.id}`}>see reviews</Link>]}>
                         <List.Item.Meta
@@ -31,7 +32,7 @@ export default function BreweryFavorites(breweryFaves) {
                     )}
                 />
             ) : (
-                <Empty image={Empty.PRESENTED_IMAGE_SIMPLE} description={'No favorites yet'} />
+                <Empty image={Empty.PRESENTED_IMAGE_SIMPLE} description={'No saved places yet'} />
             )}
         </>
     )
