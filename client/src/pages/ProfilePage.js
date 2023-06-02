@@ -1,18 +1,21 @@
-import React, { useEffect, useState } from "react";
+// libraries, packages
+import React, { useEffect, useState, useMemo } from "react";
 import { useParams } from "react-router-dom";
-import { useUserContext } from '../components/UserProvider';
-import { Avatar, Divider } from "antd";
+import { Divider } from "antd";
 import { useApolloClient, useMutation, useQuery } from "@apollo/client";
+// utils
 import { GET_USER, GET_FRIENDS } from "../utils/queries";
 import { ADD_FRIEND, REMOVE_FRIEND, REMOVE_FAV_BREWERY } from "../utils/mutations";
 import { format_date } from '../utils/formatters';
+import Auth from "../utils/auth";
+import * as API from '../utils/OpenBreweryDbApi';
+// components
 import UserProfile from '../components/UserProfile';
 import ProfileTabs from '../components/ProfileTabs'
 import FriendsList from "../components/FriendsList";
 import BreweryFavorites from "../components/BreweryFavorites";
 import BreweryWishlist from '../components/BreweryWishlist';
-import Auth from "../utils/auth";
-import * as API from '../utils/OpenBreweryDbApi';
+
 const ObjectId = require("bson-objectid");
 
 export function ProfilePage() {
@@ -20,8 +23,10 @@ export function ProfilePage() {
   const { username } = useParams();
   const [profileData, setProfileData] = useState(null);
   const [friendsData, setFriendsData] = useState(null);
-  const [breweryFaves, setBreweryFaves] = useState(new Set([]));
-  const [breweryWishes, setBreweryWishes] = useState(new Set([]));
+  const [breweriesData, setBreweriesData] = useState({
+    favorites: [],
+    wishlist: [],
+  });
   const [showForm, setShowForm] = useState(false);
   const { loading, error, data: userData, refetch } = useQuery(GET_USER, {
     variables: { username },
@@ -31,21 +36,13 @@ export function ProfilePage() {
   const [removeFavBrewery] = useMutation(REMOVE_FAV_BREWERY);
 
 
-  // gets loggedIn user's ID
-  const myData = useUserContext();
-  const myId = Auth.getProfile()?.data?._id;
-
-  const isFollowing = myData && friendsData && myData.friends.some(
-    (friend) => friend._id === profileData?._id
-  );
-
   // sets page data from URL and DB
   useEffect(() => {
     if (!loading && userData && userData.user) {
       setProfileData(userData.user);
     }
     refetch();
-  }, [loading, error, userData, profileData, refetch]);
+  }, [loading, error, userData, refetch]);
 
   // initiates friends list DB fetch for profile page once profile data is available
   useEffect(() => {
@@ -66,19 +63,24 @@ export function ProfilePage() {
 
   // tracks breweries lists
   useEffect(() => {
-    if (profileData?.favBreweries && profileData?.favBreweries.length > 0) {
-      const fetchFaves = async () => {
-        const data = await API.byManyIds(profileData.favBreweries);
-        setBreweryFaves(data);
-      }
-      fetchFaves();
-    }
-    if (profileData?.wishBreweries && profileData?.wishBreweries.length > 0) {
-      const fetchWishes = async () => {
-        const data = await API.byManyIds(profileData.wishBreweries);
-        setBreweryWishes(data);
-      }
-      fetchWishes();
+    if (profileData) {
+      const fetchBreweries = async () => {
+        if (profileData?.favBreweries && profileData.favBreweries.length > 0) {
+          const favorites = await API.byManyIds(profileData.favBreweries);
+          setBreweriesData((currentData) => ({
+            ...currentData,
+            favorites,
+          }));
+        }
+        if (profileData?.wishBreweries && profileData.wishBreweries.length > 0) {
+          const wishlist = await API.byManyIds(profileData.wishBreweries);
+          setBreweriesData((currentData) => ({
+            ...currentData,
+            wishlist,
+          }));
+        }
+      };
+      fetchBreweries();
     }
   }, [username, profileData])
 
@@ -105,7 +107,7 @@ export function ProfilePage() {
         },
       });
       if (!data) {
-        throw new Error("You have no friends");
+        throw new Error("Unable to follow this account");
       }
     } catch (err) {
       console.error(err);
@@ -119,7 +121,9 @@ export function ProfilePage() {
           friendId: new ObjectId(friendId),
         },
       });
-      return data;
+      if (!data) {
+        throw new Error("Unable to unfollow this account");
+      }
     } catch (err) {
       console.error(err);
     }
@@ -134,12 +138,14 @@ export function ProfilePage() {
         },
       });
       if (data) {
-        setBreweryFaves((current) => {
-          // creates a new set of breweries excluding the deleted brewery
-          const updatedBreweries = new Set(
-            [...current].filter((brewery) => brewery.id !== breweryId)
+        setBreweriesData((current) => {
+          const updatedFavorites = current.favorites.filter(
+            (brewery) => brewery.id !== breweryId
           );
-          return updatedBreweries;
+          const updatedWishlist = current.wishlist.filter(
+            (brewery) => brewery.id !== breweryId
+          );
+          return { favorites: updatedFavorites, wishlist: updatedWishlist };
         });
       }
       refetch();
@@ -148,30 +154,39 @@ export function ProfilePage() {
     }
   };
   
-  // renders user friends, favorites, and wish lists
-  const tabItems = [
-    {
-      label: `Follows (${profileData?.followsCount || 0})`,
-      key: 1,
-      children: <FriendsList friends={friendsData} />
-    },
-    {
-      label: `Favorites! (${breweryFaves?.length || 0})`,
-      key: 2,
-      children: <BreweryFavorites breweries={breweryFaves} />
-    },
-    {
-      label: `Wish List! (${breweryWishes?.length || 0})`,
-      key: 3,
-      children: <BreweryWishlist breweryWishes={breweryWishes}/>
-    },
-  ];
+  // renders user friends, favorites, and wish lists. useMemo only computes after data changes
+  const tabItems = useMemo(
+    () => [
+      {
+        label: `Follows (${profileData?.followsCount || 0})`,
+        key: 1,
+        children: <FriendsList friends={friendsData} />,
+      },
+      {
+        label: `Favorites! (${breweriesData.favorites.length || 0})`,
+        key: 2,
+        children: <BreweryFavorites breweries={breweriesData.favorites} />,
+      },
+      {
+        label: `Wish List! (${breweriesData.wishlist.length || 0})`,
+        key: 3,
+        children: <BreweryWishlist breweryWishes={breweriesData.wishlist} />,
+      },
+    ],
+    [profileData, friendsData, breweriesData]
+  );
+
 
   if (Auth.loggedIn()) {
     return (
       <>
         {userData?.user && !loading && (
-          <UserProfile profileData={profileData} loading={loading} showForm={showForm} />
+          <UserProfile 
+            profileData={profileData}
+            loading={loading}
+            showForm={showForm}
+            setShowForm={setShowForm}
+          />
         )}
         {userData?.user && !loading && (
           <>
