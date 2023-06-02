@@ -1,17 +1,16 @@
-// client-side packages and styles
+// libraries, packages
 import { React, useState, useEffect } from "react";
 import { useMutation, useQuery } from "@apollo/client";
 import { useParams } from "react-router-dom";
 import { Col, Card, Space, Button, Tooltip } from "antd";
 import { StarOutlined, HeartOutlined, HeartFilled, PushpinOutlined, PushpinFilled, DoubleRightOutlined, PhoneOutlined } from "@ant-design/icons";
 import styles from '../components/BreweryCard.module.css';
-// client-side utils, pages, components
+// utils
 import Auth from '../utils/auth';
-import formatPhoneNumber from '../utils/phoneFormat';
-import formatZipCode from "../utils/zipFormat";
-import breweryType from '../utils/breweryType';
+import * as formatters from '../utils/formatters';
 import { ADD_FAV_BREWERY, ADD_WISH_BREWERY, REMOVE_FAV_BREWERY, REMOVE_WISH_BREWERY } from "../utils/mutations";
 import { BREWERY_REVIEWS } from '../utils/queries';
+// components
 import { useUserContext } from '../components/UserProvider';
 import ReviewCard from "../components/ReviewCard";
 import AddReviewForm from '../components/AddReviewForm';
@@ -183,7 +182,7 @@ export default function BreweryPage() {
                 bordered={false}
               >
                 {breweryData.brewery_type && (
-                <p>Brewery Flavor: {breweryType(breweryData?.brewery_type)}</p>
+                <p>Brewery Flavor: {formatters.format_brewery_type(breweryData?.brewery_type)}</p>
                 )}
                 {/* phone number */}
                 {breweryData.phone && (<div>
@@ -191,12 +190,12 @@ export default function BreweryPage() {
                     <PhoneOutlined />
                   </span>
                   <span style={{ display: 'inline-block', marginRight: '10px' }}>
-                    <p>{formatPhoneNumber(breweryData?.phone)}</p>
+                    <p>{formatters.format_phone_number(breweryData?.phone)}</p>
                   </span>
                 </div>)}
                 {/* street address */}
                 <p>{breweryData?.street}</p>
-                <p>{breweryData?.city}, {breweryData?.state} {breweryData.postal_code && (formatZipCode(breweryData?.postal_code))}</p>
+                <p>{breweryData?.city}, {breweryData?.state} {breweryData.postal_code && (formatters.format_zip_code(breweryData?.postal_code))}</p>
                   <Space.Compact block>
                     {/* star ratings! */}
                     {!loadingReview && reviewData && (

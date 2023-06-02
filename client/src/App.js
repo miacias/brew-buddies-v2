@@ -1,6 +1,6 @@
 // client-side packages
 import React from 'react';
-import { Layout, Space, Divider, ConfigProvider, theme } from 'antd';
+import { Layout, ConfigProvider, theme } from 'antd';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 // client-side utils, pages, components
 import HomePage from './pages/HomePage';
@@ -8,9 +8,7 @@ import ConnectPage from './pages/ConnectPage';
 import SignupPage from './pages/SignupPage';
 import SearchPage from './pages/SearchPage';
 import BreweryPage from './pages/BreweryPage';
-import { UserProfile } from './pages/UserProfile';
 import { ProfilePage } from './pages/ProfilePage';
-import { AccountPage } from './pages/AccountPage';
 import { UserProvider } from './components/UserProvider';
 import Sidebar from './components/Sidebar';
 import Header from './components/Header';
@@ -67,18 +65,6 @@ function App() {
                   }}
                 >
                   <Routes>
-                    {/* <Route
-                      path='/profile/:username'
-                      exact
-                      element={
-                        <UserProfile
-                          style={{
-                          padding: 24,
-                          minHeight: 360,
-                          background: colorBgContainer,
-                          }}
-                        />}
-                    /> */}
                     <Route
                       path='/profile/:username'
                       exact
@@ -91,18 +77,6 @@ function App() {
                           }}
                         />}
                     />
-                    {/* <Route
-                      path='/profile'
-                      exact
-                      element={
-                        <AccountPage
-                          style={{
-                          padding: 24,
-                          minHeight: 360,
-                          background: colorBgContainer,
-                          }}
-                        />}
-                    /> */}
                     <Route 
                       path='/breweries/:breweryId'
                       exact

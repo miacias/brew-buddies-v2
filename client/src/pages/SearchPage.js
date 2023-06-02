@@ -1,9 +1,8 @@
 import React, { useState } from 'react';
 import Map from '../components/Map';
 import BreweryApi from '../components/BreweryApi';
-import { Input, Space } from 'antd';
 
-export default function MapPage() {
+export default function SearchPage() {
     // State is lifted to this parent component and sent down to children
     const [breweryList, setBreweryList] = useState(null);
 
