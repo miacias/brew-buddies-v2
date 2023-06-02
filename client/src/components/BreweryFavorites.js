@@ -5,39 +5,35 @@ import { Link } from 'react-router-dom';
 
 
 
-export default function BreweryFavorites(breweryList) {
+export default function BreweryFavorites(breweryFaves) {
 
 
     return (
         <>
-            {/* {friendsData?.friends ? (
+            {breweryFaves?.breweries?.length > 0 ? (
                 <List
-                    pagination={friendsData.friends.length > 3 ? {
+                    pagination={breweryFaves.length > 3 ? {
                         position: 'bottom',
                         align: 'center',
                         defaultCurrent: 1,
                         pageSize: 3
                     } : ''}
                     itemLayout="horizontal"
-                    dataSource={friendsData.friends}
-                    locale={{emptyText: <Empty image={Empty.PRESENTED_IMAGE_SIMPLE} description={'Not following anyone yet'} />}}
+                    dataSource={breweryFaves.breweries}
+                    locale={{emptyText: <Empty image={Empty.PRESENTED_IMAGE_SIMPLE} description={'No favorites yet'} />}}
                     renderItem={(item, index) => (
-                    <List.Item>
+                    <List.Item actions={[item.website_url ? <Link to={item.website_url}>view site</Link> : '', <Link to={`/breweries/${item.id}`}>see reviews</Link>]}>
                         <List.Item.Meta
                         key={item._id}
-                        avatar={item.profilePic
-                            ? <Link to={`/profile/${item.username}`}><AvatarFromURL url={item.profilePic} /></Link> 
-                            : <Link to={`/profile/${item.username}`}><Avatar icon={<UserOutlined />} /></Link>}
-                        title={<Link to={`/profile/${item.username}`}>{item.username}</Link>}
-                        description={item.bio ? item.bio : ''}
+                        title={item.name}
+                        description={`${item.brewery_type} in ${item.state}`}
                         />
-                        <div>{`${item.reviewCount} reviews`}</div>
                     </List.Item>
                     )}
                 />
             ) : (
                 ''
-            )} */}
+            )}
         </>
     )
 }

@@ -11,6 +11,7 @@ import FriendsList from "../components/FriendsList";
 import BreweryFavorites from "../components/BreweryFavorites";
 import { EditUserForm } from "../components/EditUserForm";
 import Auth from "../utils/auth";
+import * as API from '../utils/OpenBreweryDbApi';
 const ObjectId = require("bson-objectid");
 
 export function ProfilePage() {
@@ -18,7 +19,8 @@ export function ProfilePage() {
   const { username } = useParams();
   const [profileData, setProfileData] = useState(null);
   const [friendsData, setFriendsData] = useState(null);
-  const [breweryList, setBreweryList] = useState(new Set([]));
+  const [breweryFaves, setBreweryFaves] = useState(new Set([]));
+  const [breweryWishes, setBreweryWishes] = useState(new Set([]));
   const [showForm, setShowForm] = useState(false);
   const { loading, error, data: userData, refetch } = useQuery(GET_USER, {
     variables: { username },
@@ -47,14 +49,29 @@ export function ProfilePage() {
     }
   }, [profileData]);
 
-    // refetch friend data when username changes
-    useEffect(() => {
-      refetch();
-      if (profileData) {
-        const friendsIdList = profileData.friends.map((friend) => friend._id);
-        fetchFriends(friendsIdList);
+  // refetch friend data when username changes
+  useEffect(() => {
+    refetch();
+    if (profileData) {
+      const friendsIdList = profileData.friends.map((friend) => friend._id);
+      fetchFriends(friendsIdList);
+    }
+  }, [username, profileData]);
+
+  // tracks breweries lists
+  useEffect(() => {
+    if (profileData?.favBreweries && profileData?.favBreweries.length > 0) {
+      const fetchLists = async () => {
+        const data = await API.byManyIds(profileData.favBreweries);
+        setBreweryFaves(data);
       }
-    }, [username, profileData]);
+      fetchLists();
+    }
+    if (profileData?.wishBreweries && profileData?.wishBreweries.length > 0) {
+      const data = API.byManyIds(profileData.wishBreweries);
+      setBreweryWishes(data);
+    }
+  }, [username, profileData])
 
   // gets and sets friend user data for given profile
   const fetchFriends = async (friendsIdList) => {
@@ -81,8 +98,6 @@ export function ProfilePage() {
       if (!data) {
         throw new Error("You have no friends");
       }
-      // refetch();
-      // navigate("/profile");
     } catch (err) {
       console.error(err);
     }
@@ -96,8 +111,6 @@ export function ProfilePage() {
         },
       });
       return data;
-      // refetch();
-      // navigate("/profile");
     } catch (err) {
       console.error(err);
     }
@@ -108,11 +121,11 @@ export function ProfilePage() {
     try {
       const { data } = await removeFavBrewery({
         variables: {
-          breweryId: breweryId,
+          brewery: breweryId,
         },
       });
       if (data) {
-        setBreweryList((current) => {
+        setBreweryFaves((current) => {
           // creates a new set of breweries excluding the deleted brewery
           const updatedBreweries = new Set(
             [...current].filter((brewery) => brewery.id !== breweryId)
@@ -120,6 +133,7 @@ export function ProfilePage() {
           return updatedBreweries;
         });
       }
+      refetch();
     } catch (err) {
       console.error(err);
     }
@@ -136,14 +150,14 @@ export function ProfilePage() {
   // renders user friends, favorites, and wish lists
   const tabItems = [
     {
-      label: `Friends (${profileData?.friendCount})`,
+      label: `Follows (${profileData?.friendCount})`,
       key: 1,
       children: <FriendsList friends={friendsData} />
     },
     {
-      label: 'Favorites!',
+      label: `Favorites! (${breweryFaves?.length})`,
       key: 2,
-      children: <BreweryFavorites breweries={breweryList}/>
+      children: <BreweryFavorites breweries={breweryFaves} />
     },
     {
       label: 'Wish List!',

@@ -23,14 +23,15 @@ function MyMapComponent({center, zoom, breweryList}) {
     const ref = useRef();
 
     useEffect(() => {
+        console.log(breweryList)
         if (breweryList && breweryList.length > 0) {
             // filters out breweries with null coordinates
-            const mapBreweries = breweryList.filter(brewery => brewery.latitude !== null && brewery.longitude !== null);
+            const mapBreweries = breweryList.filter(brewery => brewery.latitude != null && brewery.longitude != null);
             const map = new window.google.maps.Map(ref.current, {
                 // centers on first result
                 center: { 
-                    lat: +mapBreweries[0].latitude, 
-                    lng: +mapBreweries[0].longitude 
+                    lat: +mapBreweries[0].latitude,
+                    lng: +mapBreweries[0].longitude
                 },
                 zoom,
             });
