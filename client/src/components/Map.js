@@ -23,8 +23,7 @@ function MyMapComponent({center, zoom, breweryList}) {
     const ref = useRef();
 
     useEffect(() => {
-        console.log(breweryList)
-        if (breweryList && breweryList.length > 0) {
+        if (breweryList && breweryList.length > 0 && breweryList !== null) {
             // filters out breweries with null coordinates
             const allLatitudesNull = breweryList.every((brewery) => brewery.latitude === null);
             const mapBreweries = breweryList.filter(brewery => brewery.latitude !== null && brewery.longitude !== null);
