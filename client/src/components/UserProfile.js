@@ -25,7 +25,6 @@ const UserProfile = ({ profileData, loading, showForm, setShowForm }) => {
           ) : (
             <Avatar icon={<UserOutlined />} size={300} />
           )}
-          {console.log(profileData)}
           <Space direction="vertical">
             <h2 style={{ fontSize: "24px" }}>{profileData.username}</h2>
             <h3 style={{ fontSize: "20px" }}>{profileData?.pronouns}</h3>
