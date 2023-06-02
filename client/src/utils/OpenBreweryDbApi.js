@@ -34,7 +34,6 @@ export const byManyIds = async (breweryIds) => {
             }
         });
         let data = await response.json();
-        console.log(data)
         return data;
     } catch (err) {
         console.error(err);

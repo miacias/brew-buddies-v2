@@ -78,7 +78,6 @@ export function ProfilePage() {
           friendId: new ObjectId(profileData._id),
         },
       });
-      console.log(data)
       if (!data) {
         throw new Error("You have no friends");
       }

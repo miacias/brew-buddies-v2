@@ -274,7 +274,6 @@ export default function BreweryPage() {
         {/* <div>Google Maps API here</div> */}
         <ul>
           {/* creates Review card based on total number of reviews possible */}
-          {console.log(reviewData)}
           {!loadingReview && reviewData?.reviewsByBrewery && (
             <>
             {reviewData.reviewsByBrewery.map((oneReview) => {

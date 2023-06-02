@@ -19,8 +19,9 @@ module.exports = {
         maxAge: process.env.EXPIRATION,
       });
       req.user = data;
-    } catch {
-      console.log('Invalid token');
+    } catch (err) {
+      console.error(err);
+      // console.log('Invalid token');
     }
     // returns request object to be passed to resolver as 'context'
     return req;

@@ -21,7 +21,7 @@ export const UserProvider = ({ children }) => {
     if (!Auth.isTokenExpired(token) && !loading && !error) {
         // checks if the "errors" array exists and is not empty
       if (data && data.me && data.me.errors && data.me.errors.length > 0) {
-        console.log(error.message);
+        console.error(error.message);
       } else {
         const userData = data?.me || {};
         // sets the user data in the context
