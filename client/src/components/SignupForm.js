@@ -48,6 +48,7 @@ const Signup = () => {
   });
   // set state for form validation
   const [validated] = useState(false);
+  const [errors, setErrors] = useState([]);
   // set state for alert
   const [showAlert, setShowAlert] = useState(false);
   const [addUser, { error }] = useMutation(ADD_USER);
@@ -64,45 +65,49 @@ const Signup = () => {
     });
   };
 
-  const handleFormSubmit = async (event) => {
-    const formattedBirthday = dayjs(userFormData.birthday).format("YYYY-MM-DD");
-    if (calculateAgeLimit(formattedBirthday) === false) {
-      return setShowAlert(true); // prevents underage from joining
-    }
-    // no pronouns = null
-    if (userFormData.pronouns === 'Prefer-not-to-say') {
-      userFormData.pronouns = null;
-    }
+  const handleFormSubmit = async () => {
 
-    userFormData.username = userFormData.username.toLowerCase();
-    // adds user to DB
-    try {
-      const { data } = await addUser({
-        variables: { ...userFormData, birthday: formattedBirthday },
-      });
-      if (!data) {
-        throw new Error("something went wrong!");
-      }
-      // logs in new user
-      Auth.login(data.addUser.token);
-    } catch (err) {
-      console.error(err);
-      setShowAlert(true);
-      form.resetFields();
-    }
-    // resets form to empty
-    setUserFormData({
-      email: "",
-      password: "",
-      confirm: "",
-      username: "",
-      profilePic: "",
-      postalCode: "",
-      bio: "",
-      pronouns: "",
-      birthday: "",
-    });
-  };
+  }
+
+  // const handleFormSubmit = async () => {
+  //   const formattedBirthday = dayjs(userFormData.birthday).format("YYYY-MM-DD");
+  //   if (calculateAgeLimit(formattedBirthday) === false) {
+  //     return setShowAlert(true); // prevents underage from joining
+  //   }
+  //   // no pronouns = null
+  //   if (userFormData.pronouns === 'Prefer-not-to-say') {
+  //     userFormData.pronouns = null;
+  //   }
+
+  //   userFormData.username = userFormData.username.toLowerCase();
+  //   // adds user to DB
+  //   try {
+  //     const { data } = await addUser({
+  //       variables: { ...userFormData, birthday: formattedBirthday },
+  //     });
+  //     if (!data) {
+  //       throw new Error("something went wrong!");
+  //     }
+  //     // logs in new user
+  //     Auth.login(data.addUser.token);
+  //   } catch (err) {
+  //     console.error(err);
+  //     setShowAlert(true);
+  //     form.resetFields();
+  //   }
+  //   // resets form to empty
+  //   setUserFormData({
+  //     email: "",
+  //     password: "",
+  //     confirm: "",
+  //     username: "",
+  //     profilePic: "",
+  //     postalCode: "",
+  //     bio: "",
+  //     pronouns: "",
+  //     birthday: "",
+  //   });
+  // };
 
   const calculateAgeLimit = (birthday) => {
     birthday = new Date();
@@ -155,11 +160,11 @@ const Signup = () => {
         rules={[
           {
             type: "email",
-            message: "The input is not valid E-mail!",
+            message: "The input is not valid e-mail!",
           },
           {
             required: true,
-            message: "Please input your E-mail!",
+            message: "Please input your e-mail!",
           },
         ]}
       >
@@ -242,7 +247,7 @@ const Signup = () => {
       </Form.Item>
       <Form.Item
         name="profilePic"
-        label="Image Link"
+        label="Profile Picture"
         tooltip="Links only please!"
         rules={[
           {
