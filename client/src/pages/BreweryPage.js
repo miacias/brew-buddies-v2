@@ -48,10 +48,24 @@ export default function BreweryPage() {
     }
   }
 
+    // heart icon is filled if brewery on screen is in the favorites list of the user viewing the page
+    const handlePinFill = async (brewery) => {
+      const myWishesArr = myData?.wishBreweries;
+      if (myWishesArr && myWishesArr.length > 0) {
+        const foundMatch = myWishesArr.find((favMatch) => favMatch === breweryId)
+        if (foundMatch) {
+          return setWish(true);
+        } else {
+          return setWish(false);
+        }
+      }
+    }
+
   // checks if user data is loaded then fills in the favorite heart or not
   useEffect(() => {
     if(myData) {
       handleHeartFill(breweryData);
+      handlePinFill(breweryData);
     }
   }, [myData, breweryData]);
 
