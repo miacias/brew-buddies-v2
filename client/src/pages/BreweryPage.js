@@ -1,43 +1,45 @@
-// client-side packages and styles
+// libraries, packages
 import { React, useState, useEffect } from "react";
 import { useMutation, useQuery } from "@apollo/client";
 import { useParams } from "react-router-dom";
 import { Col, Card, Space, Button, Tooltip } from "antd";
-import { StarOutlined, StarFilled, HeartOutlined, HeartFilled, DoubleRightOutlined, PhoneOutlined } from "@ant-design/icons";
+import { StarOutlined, HeartOutlined, HeartFilled, PushpinOutlined, PushpinFilled, DoubleRightOutlined, PhoneOutlined } from "@ant-design/icons";
 import styles from '../components/BreweryCard.module.css';
-// client-side utils, pages, components
+// utils
 import Auth from '../utils/auth';
-import formatPhoneNumber from '../utils/phoneFormat';
-import formatZipCode from "../utils/zipFormat";
-import breweryType from '../utils/breweryType';
-import { ADD_FAV_BREWERY, REMOVE_FAV_BREWERY } from "../utils/mutations";
-import { GET_ME, BREWERY_REVIEW } from '../utils/queries';
+import * as formatters from '../utils/formatters';
+import { ADD_FAV_BREWERY, ADD_WISH_BREWERY, REMOVE_FAV_BREWERY, REMOVE_WISH_BREWERY } from "../utils/mutations";
+import { BREWERY_REVIEWS } from '../utils/queries';
+// components
+import { useUserContext } from '../components/UserProvider';
 import ReviewCard from "../components/ReviewCard";
 import AddReviewForm from '../components/AddReviewForm';
 
 
-export default function SingleBrewery() {
+export default function BreweryPage() {
   const { breweryId } = useParams();
   const [breweryData, setBreweryData] = useState();
   const [showForm, setShowForm] = useState(false);
   const [loggedInUser, setLoggedInUser] = useState(null);
   const [favorite, setFavorite] = useState();
+  const [wish, setWish] = useState();
+  // loads logged in user data
+  const myData = useUserContext();
 
   // adds or removes brewery from user Favorites list
-  const [addFavBrewery, { error }] = useMutation(ADD_FAV_BREWERY);
-  const [removeFavBrewery, { error: removeError }] = useMutation(REMOVE_FAV_BREWERY);
+  const [addFavBrewery, { error: addFavErr }] = useMutation(ADD_FAV_BREWERY);
+  const [removeFavBrewery, { error: removeFavErr }] = useMutation(REMOVE_FAV_BREWERY);
+  const [addWishBrewery, { error: addWishErr }] = useMutation(ADD_WISH_BREWERY);
+  const [removeWishBrewery, { error: removeWishErr }] = useMutation(REMOVE_WISH_BREWERY);
   // loads all reviews for this brewery
-  const { loading: loadingReview, data: reviewData, refetch } = useQuery(BREWERY_REVIEW, { variables: { breweryId }});
-  // loads logged in user data
-  const { loading: loadingMe, error: meError, data: meData, refetch: refetchMe } = useQuery(GET_ME);
+  const { loading: loadingReview, data: reviewData, refetch } = useQuery(BREWERY_REVIEWS, { variables: { breweryId }});
 
 
   // heart icon is filled if brewery on screen is in the favorites list of the user viewing the page
   const handleHeartFill = async (brewery) => {
-    const myFaves = meData?.me?.favBreweries;
-    const breweryId = brewery?.id.toString();
-    if (myFaves && myFaves.length > 0) {
-      const foundMatch = myFaves.find((favMatch) => favMatch === breweryId)
+    const myFavesArr = myData?.favBreweries;
+    if (myFavesArr && myFavesArr.length > 0) {
+      const foundMatch = myFavesArr.find((favMatch) => favMatch === breweryId)
       if (foundMatch) {
         return setFavorite(true);
       } else {
@@ -46,21 +48,36 @@ export default function SingleBrewery() {
     }
   }
 
+    // heart icon is filled if brewery on screen is in the favorites list of the user viewing the page
+    const handlePinFill = async (brewery) => {
+      const myWishesArr = myData?.wishBreweries;
+      if (myWishesArr && myWishesArr.length > 0) {
+        const foundMatch = myWishesArr.find((favMatch) => favMatch === breweryId)
+        if (foundMatch) {
+          return setWish(true);
+        } else {
+          return setWish(false);
+        }
+      }
+    }
+
   // checks if user data is loaded then fills in the favorite heart or not
   useEffect(() => {
-    if(meData) {
+    if(myData) {
       handleHeartFill(breweryData);
+      handlePinFill(breweryData);
     }
-  }, [meData, breweryData]);
+  }, [myData, breweryData]);
 
   // calculates star review average
   const calculateAverage = (loadingReview, reviewData) => {
+    // return 1;
     const ratings = [];
     let average;
     let totalReviews;
-    if (!loadingReview && reviewData.review) {
-      reviewData.review.forEach(review => {
-        return ratings.push(parseInt(review.starRating));
+    if (!loadingReview && reviewData.reviewsByBrewery) {
+      reviewData.reviewsByBrewery.forEach(review => {
+        return ratings.push(parseInt(review.rating));
       });
       const initialValue = 0;
       const sumWithInitial = ratings.reduce(
@@ -99,18 +116,69 @@ export default function SingleBrewery() {
     refetch();
   };
 
-  // adds review to brewery page and to user profile
-  const handleAddFavBrewery = async (event) => {
+  // saves brewery to favorites list
+  const handleAddFavBrewery = async () => {
     try {
       const { data } = await addFavBrewery({
         variables: {
-          breweryId: breweryId,
+          brewery: breweryId,
         },
       });
       if (!data) {
         throw new Error('Something went wrong!');
       }
-        setFavorite(true);
+      setFavorite(true);
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
+  // removes brewery from favorites list
+  const handleRemoveFavBrewery = async () => {
+    try {
+      const { data } = await removeFavBrewery({
+        variables: {
+          brewery: breweryId,
+        },
+      });
+      if (!data) {
+        throw new Error('Something went wrong!');
+      }
+      setFavorite(false);
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
+  // saves brewery to wish list
+  const handleAddWishBrewery = async () => {
+    try {
+      const { data } = await addWishBrewery({
+        variables: {
+          brewery: breweryId,
+        },
+      });
+      if (!data) {
+        throw new Error('Something went wrong!');
+      }
+      setWish(true);
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
+  // removes brewery from wish list
+  const handleRemoveWishBrewery = async () => {
+    try {
+      const { data } = await removeWishBrewery({
+        variables: {
+          brewery: breweryId,
+        },
+      });
+      if (!data) {
+        throw new Error('Something went wrong!');
+      }
+      setWish(false);
     } catch (err) {
       console.error(err);
     }
@@ -128,7 +196,7 @@ export default function SingleBrewery() {
                 bordered={false}
               >
                 {breweryData.brewery_type && (
-                <p>Brewery Flavor: {breweryType(breweryData?.brewery_type)}</p>
+                <p>Brewery Flavor: {formatters.format_brewery_type(breweryData?.brewery_type)}</p>
                 )}
                 {/* phone number */}
                 {breweryData.phone && (<div>
@@ -136,15 +204,15 @@ export default function SingleBrewery() {
                     <PhoneOutlined />
                   </span>
                   <span style={{ display: 'inline-block', marginRight: '10px' }}>
-                    <p>{formatPhoneNumber(breweryData?.phone)}</p>
+                    <p>{formatters.format_phone_number(breweryData?.phone)}</p>
                   </span>
                 </div>)}
                 {/* street address */}
                 <p>{breweryData?.street}</p>
-                <p>{breweryData?.city}, {breweryData?.state} {breweryData.postal_code && (formatZipCode(breweryData?.postal_code))}</p>
+                <p>{breweryData?.city}, {breweryData?.state} {breweryData.postal_code && (formatters.format_zip_code(breweryData?.postal_code))}</p>
                   <Space.Compact block>
                     {/* star ratings! */}
-                    {!loadingReview && reviewData.review && (
+                    {!loadingReview && reviewData && (
                     <Tooltip title={`${calculateAverage(loadingReview, reviewData)[1]} ratings!`}>
                       <Button 
                         type={showForm ? 'primary': 'default'}
@@ -155,20 +223,49 @@ export default function SingleBrewery() {
                         {
                           !showForm
                             ? isNaN(calculateAverage(loadingReview, reviewData)[0])
-                              ? 'No reviews'
+                              ? 'Add review'
                               : `${calculateAverage(loadingReview, reviewData)[0]} out of 5`
                             : 'Cancel'
                         }
                       </Button>
                     </Tooltip>
                     )}
-                    {/* add to favorites! */}
-                    <Tooltip title={favorite ? 'I love it!' : 'Add me?'}>
-                      <Button 
-                        icon={favorite ? <HeartFilled /> : <HeartOutlined />}
-                        onClick={handleAddFavBrewery}
-                      >Favorite it!</Button>
-                    </Tooltip>
+                    {/* add/remove from favorites! */}
+                    {favorite ? (
+                      <Tooltip title={favorite ? 'I love it!' : 'Add me?'}>
+                        <Button 
+                          icon={favorite ? <HeartFilled /> : <HeartOutlined />}
+                          onClick={handleRemoveFavBrewery}
+                        >Favorited
+                        </Button>
+                      </Tooltip>
+                    ) : (
+                      <Tooltip title={favorite ? 'I love it!' : 'Add me?'}>
+                        <Button 
+                          icon={favorite ? <HeartFilled /> : <HeartOutlined />}
+                          onClick={handleAddFavBrewery}
+                        >Favorite it!
+                        </Button>
+                      </Tooltip>
+                    )}
+                    {/* add/remove from wish list! */}
+                    {wish ? (
+                      <Tooltip title={'Someday soon!'}>
+                        <Button 
+                          icon={wish ? <PushpinFilled /> : <PushpinOutlined />}
+                          onClick={handleRemoveWishBrewery}
+                        >Saved
+                        </Button>
+                      </Tooltip>
+                    ) : (
+                      <Tooltip title={'Hey babe!'}>
+                        <Button 
+                          icon={wish ? <PushpinFilled /> : <PushpinOutlined />}
+                          onClick={handleAddWishBrewery}
+                        >Save it!
+                        </Button>
+                      </Tooltip>
+                    )}
                     {/* external website button if site exists */}
                     {breweryData?.website_url && 
                     (<Tooltip title='View site!'>
@@ -190,9 +287,9 @@ export default function SingleBrewery() {
         {/* <div>Google Maps API here</div> */}
         <ul>
           {/* creates Review card based on total number of reviews possible */}
-          {!loadingReview && reviewData.review && (
+          {!loadingReview && reviewData?.reviewsByBrewery && (
             <>
-            {reviewData.review.map((oneReview) => {
+            {reviewData.reviewsByBrewery.map((oneReview) => {
               return <ReviewCard 
                 oneReview={oneReview} 
                 key={oneReview._id}

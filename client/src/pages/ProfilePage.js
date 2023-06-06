@@ -1,15 +1,21 @@
-import React , { useEffect, useState } from "react";
+// libraries, packages
+import React, { useEffect, useState, useMemo } from "react";
 import { useParams } from "react-router-dom";
-import { useUserContext } from '../components/UserProvider';
-import { Space, Avatar, Divider, Tabs, Button } from "antd";
-import { UserOutlined } from '@ant-design/icons'
+import { Divider } from "antd";
 import { useApolloClient, useMutation, useQuery } from "@apollo/client";
+// utils
 import { GET_USER, GET_FRIENDS } from "../utils/queries";
 import { ADD_FRIEND, REMOVE_FRIEND, REMOVE_FAV_BREWERY } from "../utils/mutations";
 import { format_date } from '../utils/formatters';
-import FriendsList from "../components/FriendsList";
-import { EditUserForm } from "../components/EditUserForm";
 import Auth from "../utils/auth";
+import * as API from '../utils/OpenBreweryDbApi';
+// components
+import UserProfile from '../components/UserProfile';
+import ProfileTabs from '../components/ProfileTabs'
+import FriendsList from "../components/FriendsList";
+import BreweryFavorites from "../components/BreweryFavorites";
+import BreweryWishlist from '../components/BreweryWishlist';
+
 const ObjectId = require("bson-objectid");
 
 export function ProfilePage() {
@@ -17,7 +23,10 @@ export function ProfilePage() {
   const { username } = useParams();
   const [profileData, setProfileData] = useState(null);
   const [friendsData, setFriendsData] = useState(null);
-  const [breweryList, setBreweryList] = useState(new Set([]));
+  const [breweriesData, setBreweriesData] = useState({
+    favorites: [],
+    wishlist: [],
+  });
   const [showForm, setShowForm] = useState(false);
   const { loading, error, data: userData, refetch } = useQuery(GET_USER, {
     variables: { username },
@@ -26,9 +35,6 @@ export function ProfilePage() {
   const [unfollow] = useMutation(REMOVE_FRIEND);
   const [removeFavBrewery] = useMutation(REMOVE_FAV_BREWERY);
 
-  // gets loggedIn user's ID
-  const myData = useUserContext();
-  const myId = Auth.getProfile()?.data?._id;
 
   // sets page data from URL and DB
   useEffect(() => {
@@ -36,7 +42,7 @@ export function ProfilePage() {
       setProfileData(userData.user);
     }
     refetch();
-  }, [loading, error, userData, profileData, refetch]);
+  }, [loading, error, userData, refetch]);
 
   // initiates friends list DB fetch for profile page once profile data is available
   useEffect(() => {
@@ -46,14 +52,37 @@ export function ProfilePage() {
     }
   }, [profileData]);
 
-    // refetch friend data when username changes
-    useEffect(() => {
-      refetch();
-      if (profileData) {
-        const friendsIdList = profileData.friends.map((friend) => friend._id);
-        fetchFriends(friendsIdList);
-      }
-    }, [username, profileData]);
+  // refetch friend data when username changes
+  useEffect(() => {
+    refetch();
+    if (profileData) {
+      const friendsIdList = profileData.friends.map((friend) => friend._id);
+      fetchFriends(friendsIdList);
+    }
+  }, [username, profileData]);
+
+  // tracks breweries lists
+  useEffect(() => {
+    if (profileData) {
+      const fetchBreweries = async () => {
+        if (profileData?.favBreweries && profileData.favBreweries.length > 0) {
+          const favorites = await API.byManyIds(profileData.favBreweries);
+          setBreweriesData((currentData) => ({
+            ...currentData,
+            favorites,
+          }));
+        }
+        if (profileData?.wishBreweries && profileData.wishBreweries.length > 0) {
+          const wishlist = await API.byManyIds(profileData.wishBreweries);
+          setBreweriesData((currentData) => ({
+            ...currentData,
+            wishlist,
+          }));
+        }
+      };
+      fetchBreweries();
+    }
+  }, [username, profileData])
 
   // gets and sets friend user data for given profile
   const fetchFriends = async (friendsIdList) => {
@@ -77,12 +106,9 @@ export function ProfilePage() {
           friendId: new ObjectId(profileData._id),
         },
       });
-      console.log(data)
       if (!data) {
-        throw new Error("You have no friends");
+        throw new Error("Unable to follow this account");
       }
-      // refetch();
-      // navigate("/profile");
     } catch (err) {
       console.error(err);
     }
@@ -95,9 +121,9 @@ export function ProfilePage() {
           friendId: new ObjectId(friendId),
         },
       });
-      return data;
-      // refetch();
-      // navigate("/profile");
+      if (!data) {
+        throw new Error("Unable to unfollow this account");
+      }
     } catch (err) {
       console.error(err);
     }
@@ -108,95 +134,64 @@ export function ProfilePage() {
     try {
       const { data } = await removeFavBrewery({
         variables: {
-          breweryId: breweryId,
+          brewery: breweryId,
         },
       });
       if (data) {
-        setBreweryList((current) => {
-          // creates a new set of breweries excluding the deleted brewery
-          const updatedBreweries = new Set(
-            [...current].filter((brewery) => brewery.id !== breweryId)
+        setBreweriesData((current) => {
+          const updatedFavorites = current.favorites.filter(
+            (brewery) => brewery.id !== breweryId
           );
-          return updatedBreweries;
+          const updatedWishlist = current.wishlist.filter(
+            (brewery) => brewery.id !== breweryId
+          );
+          return { favorites: updatedFavorites, wishlist: updatedWishlist };
         });
       }
+      refetch();
     } catch (err) {
       console.error(err);
     }
   };
-
-
-  // custom avatar: Ant Design UI v5.4 does not support built-in avatars from URL
-  const AvatarFromURL = ({ url, ...props }) => {
-    return (
-      <Avatar {...props} src={url} />
-    );
-  };
   
-  // renders user friends, favorites, and wish lists
-  const tabItems = [
-    {
-      label: `Friends (${profileData?.friendCount})`,
-      key: 1,
-      children: 
-        <FriendsList 
-          friends={friendsData}
-        />
-    },
-    {
-      label: 'Favorites!',
-      key: 2,
-      children: 'favorites stuff'
-    },
-    {
-      label: 'Wish List!',
-      key: 3,
-      children: 'some wishes'
-    },
-  ];
+  // renders user friends, favorites, and wish lists. useMemo only computes after data changes
+  const tabItems = useMemo(
+    () => [
+      {
+        label: `Follows (${profileData?.followsCount || 0})`,
+        key: 1,
+        children: <FriendsList friends={friendsData} />,
+      },
+      {
+        label: `Favorites! (${breweriesData.favorites.length || 0})`,
+        key: 2,
+        children: <BreweryFavorites breweries={breweriesData.favorites} />,
+      },
+      {
+        label: `Wish List! (${breweriesData.wishlist.length || 0})`,
+        key: 3,
+        children: <BreweryWishlist breweryWishes={breweriesData.wishlist} />,
+      },
+    ],
+    [profileData, friendsData, breweriesData]
+  );
+
 
   if (Auth.loggedIn()) {
     return (
       <>
         {userData?.user && !loading && (
+          <UserProfile 
+            profileData={profileData}
+            loading={loading}
+            showForm={showForm}
+            setShowForm={setShowForm}
+          />
+        )}
+        {userData?.user && !loading && (
           <>
-            <Space direction='horizontal' size={16}>
-              {userData.user?.profilePic ? (
-                <AvatarFromURL url={userData.user?.profilePic} size={300} />
-              ) : (
-                <Avatar icon={<UserOutlined />} size={300} />
-              )}
-              <Space direction='vertical'>
-                <h2 style={{fontSize: '24px'}}>{userData.user.username}</h2>
-                <h3 style={{fontSize: '20px'}}>{userData.user.pronouns}</h3>
-                <p>{userData.user.bio}</p>
-                {/* consider replacing in-line edit form with modal form */}
-                {showForm && myId === profileData?._id && <EditUserForm />}
-                {/* shows edit profile form if logged in User ID matches profile page ID */}
-                {myId === profileData?._id && (
-                  <Button onClick={() => setShowForm(!showForm)}>
-                    {showForm ? "Close" : "Edit Profile"}
-                  </Button>
-                )}
-                {/* shows follow/unfollow if logged in User ID is viewing a different profile page */}
-                {myId !== profileData?._id && myData && friendsData && (
-                  myData.friends.some((friend) => friend._id === profileData._id) ? (
-                    <Button onClick={() => handleUnfollow(profileData._id)}>
-                      Unfollow
-                    </Button>
-                  ) : (
-                    <Button onClick={handleFollow}>Follow</Button>
-                  )
-                )}
-              </Space>
-            </Space>
             <Divider orientation='center' plain>Joined {format_date(userData.user?.createdAt)}</Divider>
-            <Tabs
-              defaultActiveKey="1"
-              size={12}
-              style={{marginBottom: 32}}
-              items={tabItems}
-            />
+            <ProfileTabs tabItems={tabItems}/>
           </>
         )}
       </>

@@ -69,8 +69,10 @@ const resolvers = {
     reviewsByBrewery: async (parent, { breweryId }) => {
       try {
         const reviewSet = await Review.find({
-          breweryId,
-        }).sort({ createdAt: -1 });
+          brewery: breweryId,
+        })
+          .sort({ createdAt: -1 })
+          .populate('author');
         return reviewSet;
       } catch (err) {
         console.error(err);

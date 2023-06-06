@@ -63,7 +63,7 @@ export function UserProfile() {
       refetch();
       navigate("/profile");
     } catch (err) {
-      console.log(err);
+      console.error(err);
     }
   };
 
@@ -111,7 +111,6 @@ export function UserProfile() {
         )
       )}
       <Card title={<h2 style={{ fontSize: '24px' }}>Friend List</h2>} style={{ width: '25%' }}>        
-        {console.log(userData.friends)}
         {userData?.friends && userData.friends.length > 0 ? (
           userData.friends.map((friend) => (
             <div key={friend.username} style={{fontSize: '18px'}}>

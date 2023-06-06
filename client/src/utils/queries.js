@@ -7,7 +7,7 @@ export const GET_ME = gql`
         birthday
         email
         favBreweries
-        friendCount
+        followsCount
         friends {
             _id
         }
@@ -35,7 +35,7 @@ export const ALL_USERS = gql`
             email
             password
             birthday
-            friendCount
+            followsCount
             bio
             postalCode
             profilePic
@@ -55,7 +55,7 @@ export const GET_USER = gql`
         email
         password
         birthday
-        friendCount
+        followsCount
         bio
         postalCode
         profilePic
@@ -99,12 +99,13 @@ export const ALL_REVIEWS = gql`
                 reviewCount
             }
             createdAt
+            updatedAt
             brewery
         }
     }
 `;
 
-export const BREWERY_REVIEW = gql`
+export const BREWERY_REVIEWS = gql`
     query Review($breweryId: String) {
         reviewsByBrewery(breweryId: $breweryId) {
             _id
@@ -118,6 +119,7 @@ export const BREWERY_REVIEW = gql`
                 reviewCount
             }
             createdAt
+            updatedAt
             brewery
         }
     }

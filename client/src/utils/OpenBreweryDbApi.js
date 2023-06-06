@@ -20,7 +20,7 @@ export const byPostalCode = async (zipInput) => {
 // accepts array of string IDs and returns many breweries by ID
 export const byManyIds = async (breweryIds) => {
     // ensures .join() will complete before try/catch block attempts to fetch from API
-    let idsStrPromise = new Promise((resolve) => {
+    let idsStrPromise = await new Promise((resolve) => {
         let idsStr = breweryIds.join(',');
         resolve(idsStr);
     });
@@ -34,7 +34,6 @@ export const byManyIds = async (breweryIds) => {
             }
         });
         let data = await response.json();
-        console.log(data)
         return data;
     } catch (err) {
         console.error(err);

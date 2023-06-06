@@ -16,22 +16,23 @@ const render = (status) => {
 };
 
 // oldest brewery in USA: Yuengling headquarters in PA (17901)
-const center = { lat: 40.68341779790154, lng:-76.19781267415122 };
+const Yuengling = { lat: 40.68341779790154, lng:-76.19781267415122 };
 const zoom = 14.2;
 // creates Google map
 function MyMapComponent({center, zoom, breweryList}) {
     const ref = useRef();
 
     useEffect(() => {
-        if (breweryList && breweryList.length > 0) {
+        if (breweryList && breweryList.length > 0 && breweryList !== null) {
             // filters out breweries with null coordinates
+            const allLatitudesNull = breweryList.every((brewery) => brewery.latitude === null);
             const mapBreweries = breweryList.filter(brewery => brewery.latitude !== null && brewery.longitude !== null);
             const map = new window.google.maps.Map(ref.current, {
                 // centers on first result
-                center: { 
-                    lat: +mapBreweries[0].latitude, 
-                    lng: +mapBreweries[0].longitude 
-                },
+                center: !allLatitudesNull ? { 
+                    lat: +mapBreweries.find((brewery) => brewery.latitude !== null && brewery.longitude !== null).latitude,
+                    lng: +mapBreweries.find((brewery) => brewery.latitude !== null && brewery.longitude !== null).longitude
+                } : Yuengling,
                 zoom,
             });
             // creates a map marker for each brewery
@@ -61,7 +62,7 @@ export default function Map({ breweryList }) {
             render={render}
         >
             <MyMapComponent 
-                center={center}
+                center={Yuengling}
                 zoom={zoom}
                 breweryList={breweryList}
             />
