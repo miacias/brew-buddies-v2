@@ -66,56 +66,53 @@ const Signup = () => {
   };
 
   const handleFormSubmit = async () => {
-
-  }
-
-  // const handleFormSubmit = async () => {
-  //   const formattedBirthday = dayjs(userFormData.birthday).format("YYYY-MM-DD");
-  //   if (calculateAgeLimit(formattedBirthday) === false) {
-  //     return setShowAlert(true); // prevents underage from joining
-  //   }
-  //   // no pronouns = null
-  //   if (userFormData.pronouns === 'Prefer-not-to-say') {
-  //     userFormData.pronouns = null;
-  //   }
-
-  //   userFormData.username = userFormData.username.toLowerCase();
-  //   // adds user to DB
-  //   try {
-  //     const { data } = await addUser({
-  //       variables: { ...userFormData, birthday: formattedBirthday },
-  //     });
-  //     if (!data) {
-  //       throw new Error("something went wrong!");
-  //     }
-  //     // logs in new user
-  //     Auth.login(data.addUser.token);
-  //   } catch (err) {
-  //     console.error(err);
-  //     setShowAlert(true);
-  //     form.resetFields();
-  //   }
-  //   // resets form to empty
-  //   setUserFormData({
-  //     email: "",
-  //     password: "",
-  //     confirm: "",
-  //     username: "",
-  //     profilePic: "",
-  //     postalCode: "",
-  //     bio: "",
-  //     pronouns: "",
-  //     birthday: "",
-  //   });
-  // };
+    // const formattedBirthday = dayjs(userFormData.birthday).format("YYYY-MM-DD");
+    if (calculateAgeLimit(userFormData.birthday) === false) {
+      return setShowAlert(true); // prevents underage from joining
+    }
+    // no pronouns = null
+    if (userFormData.pronouns === 'Prefer-not-to-say') {
+      userFormData.pronouns = null;
+    }
+    userFormData.username = userFormData.username.toLowerCase();
+    // adds user to DB
+    try {
+      const { data } = await addUser({
+        variables: { ...userFormData },
+      });
+      if (!data) {
+        throw new Error("something went wrong!");
+      }
+      // logs in new user
+      Auth.login(data.addUser.token);
+    } catch (err) {
+      console.error(err);
+      setShowAlert(true);
+      form.resetFields();
+    }
+    // resets form to empty
+    setUserFormData({
+      email: "",
+      password: "",
+      confirm: "",
+      username: "",
+      profilePic: "",
+      postalCode: "",
+      bio: "",
+      pronouns: "",
+      birthday: "",
+    });
+  };
 
   const calculateAgeLimit = (birthday) => {
-    birthday = new Date();
-    const ofAge = new Date().setFullYear(birthday.getFullYear() - 21);
-    if (birthday <= ofAge) {
-      return true;
+    const personBirthday = new Date(birthday);
+    console.log('personBirthday', personBirthday.toISOString());
+    const ofAge = new Date(new Date().setFullYear(new Date().getFullYear() - 21));
+    console.log('ofAge', ofAge);
+    if (personBirthday < ofAge) {
+      return true; // person is of age
     } else {
-      return false;
+      return false; // person is not of age
     }
   }
 
@@ -230,20 +227,33 @@ const Signup = () => {
         />
       </Form.Item>
       <Form.Item
-        name='birthday-date-picker'
+        // name='birthday-date-picker'
         label='Birthday'
-        initialValue={''}
-        onChange={(date, dateString) =>
-          setUserFormData({ ...userFormData, birthday: dateString })
-        }
-        rules={[
-          {
-            required: true,
-            message: "Please select your birthday! This site is restricted to 21+.",
-            type: 'object',
-          }]}
+        // initialValue={''}
+        // onChange={(date, dateString) =>
+        //   setUserFormData({ ...userFormData, birthday: dateString })
+        // }
+        // rules={[
+        //   {
+        //     required: true,
+        //     message: "Please select your birthday! This site is restricted to 21+.",
+        //     type: 'object',
+        //   }]}
       >
-        <DatePicker/>
+        <DatePicker
+          name='birthday-date-picker'
+          // label='Birthday'
+          initialValue={''}
+          onChange={(date, dateString) =>{
+            setUserFormData({ ...userFormData, birthday: date })
+          }}
+          rules={[
+            {
+              required: true,
+              message: "Please select your birthday! This site is restricted to 21+.",
+              type: 'object',
+            }]}
+        />
       </Form.Item>
       <Form.Item
         name="profilePic"
