@@ -183,9 +183,12 @@ export function ProfilePage() {
         {userData?.user && !loading && (
           <UserProfile 
             profileData={profileData}
+            friendsData={friendsData}
             loading={loading}
             showForm={showForm}
             setShowForm={setShowForm}
+            handleFollow={handleFollow}
+            handleUnfollow={handleUnfollow}
           />
         )}
         {userData?.user && !loading && (
