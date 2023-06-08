@@ -66,7 +66,6 @@ const Signup = () => {
   };
 
   const handleFormSubmit = async () => {
-    // const formattedBirthday = dayjs(userFormData.birthday).format("YYYY-MM-DD");
     if (calculateAgeLimit(userFormData.birthday) === false) {
       return setShowAlert(true); // prevents underage from joining
     }
@@ -106,9 +105,7 @@ const Signup = () => {
 
   const calculateAgeLimit = (birthday) => {
     const personBirthday = new Date(birthday);
-    console.log('personBirthday', personBirthday.toISOString());
     const ofAge = new Date(new Date().setFullYear(new Date().getFullYear() - 21));
-    console.log('ofAge', ofAge);
     if (personBirthday < ofAge) {
       return true; // person is of age
     } else {
