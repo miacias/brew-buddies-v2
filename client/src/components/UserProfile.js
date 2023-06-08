@@ -1,13 +1,14 @@
 import React from "react";
+import { useUserContext } from '../components/UserProvider';
 import { Avatar, Button, Space } from "antd";
 import { UserOutlined } from "@ant-design/icons";
 import { EditUserForm } from "./EditUserForm";
 import Auth from "../utils/auth";
 
 
-const UserProfile = ({ profileData, loading, showForm, setShowForm }) => {
+const UserProfile = ({ profileData, friendsData, loading, showForm, setShowForm, handleFollow, handleUnfollow }) => {
   const myId = Auth.getProfile()?.data?._id;
-
+  const myData = useUserContext();
 
   // custom avatar: Ant Design UI v5.4 does not support built-in avatars from URL
   const AvatarFromURL = ({ url, ...props }) => {
@@ -34,6 +35,16 @@ const UserProfile = ({ profileData, loading, showForm, setShowForm }) => {
               <Button onClick={() => setShowForm(!showForm)}>
                 {showForm ? "Close" : "Edit Profile"}
               </Button>
+            )}
+            {/* shows follow/unfollow if logged in User ID is viewing a different profile page */}
+            {myId !== profileData?._id && myData && friendsData && (
+              myData.friends.some((friend) => friend._id === profileData._id) ? (
+                <Button onClick={() => handleUnfollow(profileData._id)}>
+                  Unfollow
+                </Button>
+              ) : (
+                <Button onClick={handleFollow}>Follow</Button>
+              )
             )}
           </Space>
         </Space>
