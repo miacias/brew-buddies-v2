@@ -19,6 +19,7 @@ import AddReviewForm from '../components/AddReviewForm';
 export default function BreweryPage() {
   const { breweryId } = useParams();
   const [breweryData, setBreweryData] = useState();
+  console.log('brewerypagejs', breweryData);
   const [showForm, setShowForm] = useState(false);
   const [loggedInUser, setLoggedInUser] = useState(null);
   const [favorite, setFavorite] = useState();
@@ -250,7 +251,7 @@ export default function BreweryPage() {
                     )}
                     {/* add/remove from wish list! */}
                     {wish ? (
-                      <Tooltip title={'Someday soon!'}>
+                      <Tooltip title={'Maybe Next Time!'}>
                         <Button 
                           icon={wish ? <PushpinFilled /> : <PushpinOutlined />}
                           onClick={handleRemoveWishBrewery}
@@ -258,7 +259,7 @@ export default function BreweryPage() {
                         </Button>
                       </Tooltip>
                     ) : (
-                      <Tooltip title={'Hey babe!'}>
+                      <Tooltip title={'Save to Wish List?'}>
                         <Button 
                           icon={wish ? <PushpinFilled /> : <PushpinOutlined />}
                           onClick={handleAddWishBrewery}

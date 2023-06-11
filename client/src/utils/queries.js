@@ -105,6 +105,26 @@ export const ALL_REVIEWS = gql`
     }
 `;
 
+// export const ALL_REVIEWS = gql`
+//     query allReviews {
+//         allReviews {
+//             _id
+//             text
+//             rating
+//             author {
+//                 _id
+//                 username
+//                 pronouns
+//                 profilePic
+//                 reviewCount
+//             }
+//             createdAt
+//             updatedAt
+//             brewery
+//         }
+//     }
+// `;
+
 export const BREWERY_REVIEWS = gql`
     query Review($breweryId: String) {
         reviewsByBrewery(breweryId: $breweryId) {
