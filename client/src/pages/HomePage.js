@@ -31,17 +31,6 @@ export default function HomePage() {
           fetchBreweries();
         }
       }, [allReviewData]);
-    // useEffect(() => {
-    //     if (!loadingAllReviews && allReviewData.allReviews && allReviewData.allReviews.length > 0) {
-    //         allReviewData.allReviews.forEach(review => {     
-    //             const searchByIdApi = `https://api.openbrewerydb.org/v1/breweries/${review.breweryId}`;
-    //             fetch(searchByIdApi)
-    //             .then((response) => response.json())
-    //             .then((data) => setBreweryData(data))
-    //             .catch((error) => console.error(error));
-    //         });
-    //     }
-    // }, [allReviewData]);
 
     if(!loadingAllReviews && allReviewData && breweryData.length > 0) {
         return (

@@ -54,24 +54,7 @@ const resolvers = {
       }
     },
     // shows all reviews from most recent first, 50 at a time
-
-    // allReviews: async (parent, { breweryId }) => {
-    //   const reviewSet = await Review.find({
-    //     breweryId,
-    //   }).sort({ createdAt: -1 });
-    //   const usernames = reviewSet.map((review) => review.reviewAuthor);
-    //   const reviewUsers = await User.find({ username: { $in: usernames } });
-    //   const mergedData = reviewSet.map((review) => {
-    //     const author = reviewUsers.find(
-    //       (user) => user.username === review.reviewAuthor
-    //     );
-    //     return { review, author };
-    //   });
-    //   return mergedData;
-    //   // add user data (see above for example), return similar structure
-    //   // return reviewSet;
-    // },
-
+    // this is currently only used on the homepage
     allReviews: async () => {
       try {
         const fiftyReviews = await Review.find()
