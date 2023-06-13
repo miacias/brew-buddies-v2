@@ -6,7 +6,6 @@ import ReviewCard from '../components/ReviewCard';
 export default function HomePage() {
     const [breweryData, setBreweryData] = useState([]);
     const { loading: loadingAllReviews, data: allReviewData } = useQuery(ALL_REVIEWS);
-    console.log('homepg allreview data', allReviewData);
 
     // calls OpenBreweryDB API and sets breweryData State for all breweries
     useEffect(() => {

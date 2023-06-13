@@ -19,7 +19,6 @@ import AddReviewForm from '../components/AddReviewForm';
 export default function BreweryPage() {
   const { breweryId } = useParams();
   const [breweryData, setBreweryData] = useState();
-  console.log('brewerypagejs', breweryData);
   const [showForm, setShowForm] = useState(false);
   const [loggedInUser, setLoggedInUser] = useState(null);
   const [favorite, setFavorite] = useState();
