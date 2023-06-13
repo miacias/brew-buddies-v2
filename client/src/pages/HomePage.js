@@ -5,7 +5,12 @@ import ReviewCard from '../components/ReviewCard';
 
 export default function HomePage() {
     const [breweryData, setBreweryData] = useState([]);
-    const { loading: loadingAllReviews, data: allReviewData } = useQuery(ALL_REVIEWS);
+    const { loading: loadingAllReviews, error: allReviewErr, data: allReviewData, refetch } = useQuery(ALL_REVIEWS);
+
+    // refetches breweries after a new review is added
+    useEffect(() => {
+      refetch();
+    }, [breweryData]);
 
     // calls OpenBreweryDB API and sets breweryData State for all breweries
     useEffect(() => {
@@ -26,7 +31,6 @@ export default function HomePage() {
             );
             setBreweryData(breweriesData);
           };
-    
           fetchBreweries();
         }
       }, [allReviewData]);
