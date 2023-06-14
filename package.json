@@ -28,6 +28,7 @@
   "dependencies": {
     "@emotion/react": "^11.10.8",
     "@emotion/styled": "^11.10.8",
-    "granim": "^2.0.0"
+    "granim": "^2.0.0",
+    "react-infinite-scroll-component": "^6.1.0"
   }
 }
