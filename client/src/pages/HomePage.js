@@ -2,32 +2,42 @@ import React, { useState, useEffect } from 'react';
 import { useQuery } from '@apollo/client';
 import { ALL_REVIEWS } from '../utils/queries';
 import ReviewCard from '../components/ReviewCard';
+import * as API from '../utils/OpenBreweryDbApi';
 
 export default function HomePage() {
-    const [breweryData, setBreweryData] = useState();
-    const { loading, data } = useQuery(ALL_REVIEWS);
+    const [breweryData, setBreweryData] = useState([]);
+    const { loading: loadingAllReviews, error: allReviewErr, data: allReviewData, refetch } = useQuery(ALL_REVIEWS);
+
+    // refetches breweries after a new review is added
+    useEffect(() => {
+      refetch();
+    }, [breweryData]);
 
     // calls OpenBreweryDB API and sets breweryData State for all breweries
     useEffect(() => {
-        if (!loading && data.reviews && data.reviews.length > 0) {
-            data.reviews.forEach(review => {     
-                const searchByIdApi = `https://api.openbrewerydb.org/v1/breweries/${review.breweryId}`;
-                fetch(searchByIdApi)
-                .then((response) => response.json())
-                .then((data) => setBreweryData(data))
-                .catch((error) => console.error(error));
-            });
+        if (!loadingAllReviews && allReviewData.allReviews && allReviewData.allReviews.length > 0) {
+          const fetchBreweries = async () => {
+            try {
+              const breweryIds = allReviewData.allReviews.map(review => review.brewery);
+              const breweries = await API.byManyIds(breweryIds);
+              setBreweryData(breweries);
+            } catch (err) {
+              console.error(err);
+              return null;
+            }
+          }
+          fetchBreweries();
         }
-    }, [data]);
+      }, [allReviewData]);
 
-    if(!loading && data && breweryData) {
+    if(!loadingAllReviews && allReviewData && breweryData.length > 0) {
         return (
             <>
-                {data.reviews.map((oneReview) => {
+                {allReviewData.allReviews.map((oneReview, index) => {
                     return <ReviewCard
                         oneReview={oneReview}
                         key={oneReview?._id}
-                        breweryData={breweryData}
+                        breweryData={breweryData[index]}
                     />
                 })}
             </>

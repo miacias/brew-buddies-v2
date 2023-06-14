@@ -54,17 +54,30 @@ const resolvers = {
       }
     },
     // shows all reviews from most recent first, 50 at a time
-    allReviews: async (page) => {
+    // this is currently only used on the homepage
+    allReviews: async () => {
       try {
         const fiftyReviews = await Review.find()
           .sort({ createdAt: -1 })
-          .skip(page * 50)
-          .limit(50);
+          .populate('author');
         return fiftyReviews;
       } catch (err) {
         console.error(err);
       }
     },
+
+    // allReviews: async (page) => {
+    //   try {
+    //     const fiftyReviews = await Review.find()
+    //       .sort({ createdAt: -1 })
+    //       .skip(page * 50)
+    //       .limit(50);
+    //     return fiftyReviews;
+    //   } catch (err) {
+    //     console.error(err);
+    //   }
+    // },
+
     // finds all reviews for one brewery by brewery ID
     reviewsByBrewery: async (parent, { breweryId }) => {
       try {
