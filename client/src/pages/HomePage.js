@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useQuery } from '@apollo/client';
 import { ALL_REVIEWS } from '../utils/queries';
 import ReviewCard from '../components/ReviewCard';
+import * as API from '../utils/OpenBreweryDbApi';
 
 export default function HomePage() {
     const [breweryData, setBreweryData] = useState([]);
@@ -16,21 +17,15 @@ export default function HomePage() {
     useEffect(() => {
         if (!loadingAllReviews && allReviewData.allReviews && allReviewData.allReviews.length > 0) {
           const fetchBreweries = async () => {
-            const breweriesData = await Promise.all(
-                allReviewData.allReviews.map(async (review) => {
-                try {
-                  const searchByIdApi = `https://api.openbrewerydb.org/v1/breweries/${review.brewery}`;
-                  const response = await fetch(searchByIdApi);
-                  const data = await response.json();
-                  return data;
-                } catch (error) {
-                  console.error(error);
-                  return null;
-                }
-              })
-            );
-            setBreweryData(breweriesData);
-          };
+            try {
+              const breweryIds = allReviewData.allReviews.map(review => review.brewery);
+              const breweries = await API.byManyIds(breweryIds);
+              setBreweryData(breweries);
+            } catch (err) {
+              console.error(err);
+              return null;
+            }
+          }
           fetchBreweries();
         }
       }, [allReviewData]);

@@ -32,7 +32,7 @@ export default function ReviewCard({ oneReview, breweryData }) {
         {urlParams === '/' ?
           <Card
             type="inner"
-            // title={<a href={breweryData.website_url ? breweryData.website_url : ''}>{breweryData?.name}</a>}
+            title={<Link to={`/breweries/${breweryData.id}`}>{breweryData?.name}</Link>}
             style={{
               marginTop: 16,
             }}
