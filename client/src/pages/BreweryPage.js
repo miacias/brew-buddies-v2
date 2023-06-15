@@ -250,7 +250,7 @@ export default function BreweryPage() {
                     )}
                     {/* add/remove from wish list! */}
                     {wish ? (
-                      <Tooltip title={'Someday soon!'}>
+                      <Tooltip title={'Someday!'}>
                         <Button 
                           icon={wish ? <PushpinFilled /> : <PushpinOutlined />}
                           onClick={handleRemoveWishBrewery}
@@ -258,7 +258,7 @@ export default function BreweryPage() {
                         </Button>
                       </Tooltip>
                     ) : (
-                      <Tooltip title={'Hey babe!'}>
+                      <Tooltip title={'Save for later?'}>
                         <Button 
                           icon={wish ? <PushpinFilled /> : <PushpinOutlined />}
                           onClick={handleAddWishBrewery}
