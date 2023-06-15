@@ -4,7 +4,7 @@ import { useParams } from "react-router-dom";
 import { Divider } from "antd";
 import { useApolloClient, useMutation, useQuery } from "@apollo/client";
 // utils
-import { GET_USER, GET_FRIENDS } from "../utils/queries";
+import { GET_USER, GET_FRIENDS, REVIEWS_BY_USER } from "../utils/queries";
 import { ADD_FRIEND, REMOVE_FRIEND, REMOVE_FAV_BREWERY } from "../utils/mutations";
 import { format_date } from '../utils/formatters';
 import Auth from "../utils/auth";
@@ -23,6 +23,7 @@ export function ProfilePage() {
   const { username } = useParams();
   const [profileData, setProfileData] = useState(null);
   const [friendsData, setFriendsData] = useState(null);
+  const [reviewCardData, setReviewCardData] = useState();
   const [breweriesData, setBreweriesData] = useState({
     favorites: [],
     wishlist: [],
@@ -82,7 +83,31 @@ export function ProfilePage() {
       };
       fetchBreweries();
     }
-  }, [username, profileData])
+  }, [username, profileData]);
+
+  // gathers brewery info and review info into one State
+  useEffect(() => {
+    refetch();
+    if (profileData) {
+      fetchReviews(profileData._id);
+    }
+  }, [username, profileData]);
+
+  // gets and sets reviews data for given profile
+  const fetchReviews = async (userId) => {
+    console.log('userId', userId)
+    const id = new ObjectId(userId);
+    try {
+      const { data } = await client.query({
+        query: REVIEWS_BY_USER,
+        variables: { id }
+      });
+      console.log(data);
+      // const breweries = API.byManyIds();
+    } catch (err) {
+      console.error(err);
+    }
+  };
 
   // gets and sets friend user data for given profile
   const fetchFriends = async (friendsIdList) => {
