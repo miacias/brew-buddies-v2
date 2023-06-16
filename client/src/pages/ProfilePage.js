@@ -102,9 +102,19 @@ export function ProfilePage() {
         query: REVIEWS_BY_USER,
         variables: { id: userId }
       });
-      setReviewCardData(data.reviewsByAuthor);
+      const reviewCards = data.reviewsByAuthor.map(review=> {
+        return {
+          author: profileData,
+          review
+        };
+      });
+      setReviewCardData(reviewCards);
       const breweryIds = data.reviewsByAuthor.map((review) => review.brewery);
       const reviewedBreweries = API.byManyIds(breweryIds);
+      setBreweriesData((currentData) => ({
+        ...currentData,
+        reviewedBreweries,
+      }));
     } catch (err) {
       console.error(err);
     }
@@ -223,8 +233,15 @@ export function ProfilePage() {
             <ProfileTabs tabItems={tabItems}/>
           </>
         )}
-        {/* {}
-        <ReviewCard/> */}
+        {reviewCardData && reviewCardData.length > 0 && reviewCardData.map((oneReview, index) => {
+          return (
+            <ReviewCard
+              key={index}
+              oneReview={oneReview}
+              breweryData={breweriesData.reviewed}
+            />
+          )}
+        )}
       </>
     )
   } else {
