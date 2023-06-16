@@ -15,6 +15,7 @@ import ProfileTabs from '../components/ProfileTabs'
 import FriendsList from "../components/FriendsList";
 import BreweryFavorites from "../components/BreweryFavorites";
 import BreweryWishlist from '../components/BreweryWishlist';
+import ReviewCard from '../components/ReviewCard';
 
 const ObjectId = require("bson-objectid");
 
@@ -27,6 +28,7 @@ export function ProfilePage() {
   const [breweriesData, setBreweriesData] = useState({
     favorites: [],
     wishlist: [],
+    reviewed: [],
   });
   const [showForm, setShowForm] = useState(false);
   const { loading, error, data: userData, refetch } = useQuery(GET_USER, {
@@ -95,15 +97,14 @@ export function ProfilePage() {
 
   // gets and sets reviews data for given profile
   const fetchReviews = async (userId) => {
-    console.log('userId', userId)
-    const id = new ObjectId(userId);
     try {
       const { data } = await client.query({
         query: REVIEWS_BY_USER,
-        variables: { id }
+        variables: { id: userId }
       });
-      console.log(data);
-      // const breweries = API.byManyIds();
+      setReviewCardData(data.reviewsByAuthor);
+      const breweryIds = data.reviewsByAuthor.map((review) => review.brewery);
+      const reviewedBreweries = API.byManyIds(breweryIds);
     } catch (err) {
       console.error(err);
     }
@@ -122,7 +123,7 @@ export function ProfilePage() {
     } catch (err) {
       console.error(err);
     }
-  }
+  };
 
   const handleFollow = async () => {
     try {
@@ -222,6 +223,8 @@ export function ProfilePage() {
             <ProfileTabs tabItems={tabItems}/>
           </>
         )}
+        {/* {}
+        <ReviewCard/> */}
       </>
     )
   } else {

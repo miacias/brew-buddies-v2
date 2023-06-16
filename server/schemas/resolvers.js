@@ -93,7 +93,6 @@ const resolvers = {
     },
     // finds all reviews written by one user
     reviewsByAuthor: async (parent, { id }) => {
-      console.log('hello resolver');
       try {
         const reviewSet = await Review.find({
           author: id,
