@@ -53,7 +53,7 @@ export default function ReviewCard({ oneReview, breweryData }) {
           description={format_timestamp(oneReview.createdAt)}
         />
         {/* if on HomePage, render card with brewery title */}
-        {view === 'home' && (
+        {view === 'home' || 'profile' && (
           <Card
             type="inner"
             title={<Link to={`/breweries/${breweryData.id}`}>{breweryData?.name}</Link>}
@@ -75,18 +75,6 @@ export default function ReviewCard({ oneReview, breweryData }) {
             }}
           >
             <p>{oneReview.text}</p>
-          </Card>
-        )}
-        {view === 'profile' && (
-          // if on BreweryPage render card with brewery star rating as title
-          <Card
-            type="inner"
-            title={<Rate disabled defaultValue={oneReview.review.rating}/>}
-            style={{
-              marginTop: 16,
-            }}
-          >
-            <p>{oneReview.review.text}</p>
           </Card>
         )}
       </Card>
