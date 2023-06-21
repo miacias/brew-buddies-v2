@@ -53,7 +53,7 @@ export default function ReviewCard({ oneReview, breweryData }) {
           description={format_timestamp(oneReview.createdAt)}
         />
         {/* if on HomePage, render card with brewery title */}
-        {view === 'home' || 'profile' && (
+        {(view === 'home' || 'profile') && (
           <Card
             type="inner"
             title={<Link to={`/breweries/${breweryData.id}`}>{breweryData?.name}</Link>}
