@@ -1,4 +1,3 @@
-// using both "loading card" and "inner card" components from ANT.  The Meta tag comes from "loading card" is attached to an "inner card"
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { Avatar, Card, Rate, Tooltip } from 'antd';
@@ -10,10 +9,15 @@ const { Meta } = Card;
 
 export default function ReviewCard({ oneReview, breweryData }) {
   let urlParams = window.location.pathname;
-  let view;
+  const [view, setView] = useState('home');
 
+  // sets page view to conditionally render based on urlParams
   useEffect(() => {
-    pageView();
+    const updateView = async () => {
+      const newView = await pageView();
+      setView(newView);
+    };
+    updateView();
   }, [breweryData]);
 
   // custom avatar: Ant Design UI v5.4 does not support built-in avatars from URL
@@ -24,18 +28,22 @@ export default function ReviewCard({ oneReview, breweryData }) {
   };
 
   const pageView = async () => {
+    let newView;
     if (urlParams.includes('breweries')) {
-      view = 'brewery'
+      newView = 'brewery';
     } else if (urlParams.includes('profile')) {
-      view = 'profile'
+      newView = 'profile';
     } else {
-      view = 'home'
+      newView = 'home';
     }
+    return newView;
   };
 
 
   return (
-      <Card>
+    // using both "loading card" and "inner card" components from Ant Design
+    <Card>
+        {/* Meta tag comes from "loading card" is attached to an "inner card" */}
         <Meta
           avatar={oneReview.author.profilePic 
             ? <Link to={`/profile/${oneReview.author.username}`}><AvatarFromURL url={oneReview.author.profilePic} /></Link>
