@@ -191,8 +191,7 @@ export function ProfilePage() {
   };
   
   // renders user friends, favorites, and wish lists. useMemo only computes after data changes
-  const tabItems = useMemo(
-    () => [
+  const tabItems = useMemo(() => [
       {
         label: `Following (${profileData?.followsCount || 0})`,
         key: 1,
