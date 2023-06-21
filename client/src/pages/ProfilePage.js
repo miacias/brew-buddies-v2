@@ -194,7 +194,7 @@ export function ProfilePage() {
   const tabItems = useMemo(
     () => [
       {
-        label: `Follows (${profileData?.followsCount || 0})`,
+        label: `Following (${profileData?.followsCount || 0})`,
         key: 1,
         children: <FriendsList friends={friendsData} />,
       },
