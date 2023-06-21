@@ -1,4 +1,5 @@
 // using both "loading card" and "inner card" components from ANT.  The Meta tag comes from "loading card" is attached to an "inner card"
+import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { Avatar, Card, Rate, Tooltip } from 'antd';
 import { UserOutlined } from "@ant-design/icons";
@@ -10,6 +11,10 @@ const { Meta } = Card;
 export default function ReviewCard({ oneReview, breweryData }) {
   let urlParams = window.location.pathname;
   let view;
+
+  useEffect(() => {
+    pageView();
+  }, [breweryData]);
 
   // custom avatar: Ant Design UI v5.4 does not support built-in avatars from URL
   const AvatarFromURL = ({ url, ...props }) => {
@@ -27,7 +32,6 @@ export default function ReviewCard({ oneReview, breweryData }) {
       view = 'home'
     }
   };
-  pageView()
 
 
   return (
