@@ -29,16 +29,24 @@ export default function HomePage() {
           fetchBreweries();
         }
       }, [allReviewData]);
+    
+    // protects from page breaks if breweryData is unavailable
+    if (!breweryData) {
+      return <div>Loading...</div>;
+    }
 
     if(!loadingAllReviews && allReviewData && breweryData.length > 0) {
         return (
             <>
                 {allReviewData.allReviews.map((oneReview, index) => {
-                    return <ReviewCard
-                        oneReview={oneReview}
-                        key={oneReview?._id}
-                        breweryData={breweryData[index]}
-                    />
+                    return (
+                      <ReviewCard
+                          oneReview={oneReview}
+                          key={oneReview?._id}
+                          // breweryData={breweryData.filter(brewery => brewery.id === oneReview.brewery)[0]}
+                          breweryData={breweryData[index]}
+                      />
+                    )
                 })}
             </>
         )

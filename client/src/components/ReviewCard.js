@@ -11,15 +11,6 @@ export default function ReviewCard({ oneReview, breweryData }) {
   let urlParams = window.location.pathname;
   const [view, setView] = useState('home');
 
-  // sets page view to conditionally render based on urlParams
-  useEffect(() => {
-    const updateView = async () => {
-      const newView = await pageView();
-      setView(newView);
-    };
-    updateView();
-  }, [breweryData]);
-
   // custom avatar: Ant Design UI v5.4 does not support built-in avatars from URL
   const AvatarFromURL = ({ url, ...props }) => {
     return (
@@ -39,11 +30,17 @@ export default function ReviewCard({ oneReview, breweryData }) {
     return newView;
   };
 
+    // sets page view to conditionally render based on urlParams
+    useEffect(() => {
+      const updateView = async () => {
+        const newView = await pageView();
+        setView(newView);
+      };
+      updateView();
+    }, [breweryData]);
 
   return (
-    // using both "loading card" and "inner card" components from Ant Design
     <Card>
-        {/* Meta tag comes from "loading card" is attached to an "inner card" */}
         <Meta
           avatar={oneReview.author.profilePic 
             ? <Link to={`/profile/${oneReview.author.username}`}><AvatarFromURL url={oneReview.author.profilePic} /></Link>
@@ -53,7 +50,7 @@ export default function ReviewCard({ oneReview, breweryData }) {
           description={format_timestamp(oneReview.createdAt)}
         />
         {/* if on HomePage, render card with brewery title */}
-        {(view === 'home' || 'profile') && (
+        {view === 'home' && (
           <Card
             type="inner"
             title={<Link to={`/breweries/${breweryData.id}`}>{breweryData?.name}</Link>}
@@ -65,8 +62,8 @@ export default function ReviewCard({ oneReview, breweryData }) {
             <p>{oneReview.text}</p>
           </Card>
         )}
+        {/* if on BreweryPage render card with brewery star rating as title */}
         {view === 'brewery' && (
-          // if on BreweryPage render card with brewery star rating as title
           <Card
             type="inner"
             title={<Rate disabled defaultValue={oneReview.rating}/>}
@@ -75,6 +72,18 @@ export default function ReviewCard({ oneReview, breweryData }) {
             }}
           >
             <p>{oneReview.text}</p>
+          </Card>
+        )}
+        {/* if on ProfilePage render card with brewery star rating as title */}
+        {view === 'profile' && (
+          <Card
+            type="inner"
+            title={<Rate disabled defaultValue={oneReview.review.rating}/>}
+            style={{
+              marginTop: 16,
+            }}
+          >
+            <p>{oneReview.review.text}</p>
           </Card>
         )}
       </Card>

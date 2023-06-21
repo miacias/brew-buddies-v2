@@ -1,7 +1,7 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { LockOutlined, UserOutlined } from '@ant-design/icons';
-import { Button, Form, Input, Alert, Space } from 'antd';
+import { Button, Form, Input, Alert } from 'antd';
 import Auth from '../utils/auth';
 import { useMutation } from '@apollo/client';
 import { LOGIN } from '../utils/mutations';
@@ -78,8 +78,12 @@ const Login = () => {
       
 
       <Form.Item>
-      
-        <Button disabled={!(userFormData.email && userFormData.password)} type="primary" htmlType="submit" className="login-form-button">
+        <Button 
+          disabled={!(userFormData.email && userFormData.password)} 
+          type="primary" 
+          htmlType="submit" 
+          className="login-form-button"
+        >
           Log in
         </Button>
         Or <Link to="/signup">register now!</Link>
@@ -88,15 +92,3 @@ const Login = () => {
   );
 };
 export default Login;
-// #components-form-demo-normal-login .login-form {
-//   max-width: 300px;
-// }
-// #components-form-demo-normal-login .login-form-forgot {
-//   float: right;
-// }
-// #components-form-demo-normal-login .ant-col-rtl .login-form-forgot {
-//   float: left;
-// }
-// #components-form-demo-normal-login .login-form-button {
-//   width: 100%;
-// }
