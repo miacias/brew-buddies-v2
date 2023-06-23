@@ -244,8 +244,6 @@ export function ProfilePage() {
             <ReviewCard
               key={index}
               oneReview={oneReview}
-              // breweryData={breweriesData.reviewed}
-              // breweryData={breweriesData.reviewed.filter(brewery => brewery.id === oneReview.brewery)[0]}
               breweryData={filterReviewedBreweries(oneReview)}
             />
             </>

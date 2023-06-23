@@ -42,8 +42,6 @@ export default function ReviewCard({ oneReview, breweryData }) {
 
   return (
     <>
-      {console.log({oneReview})}
-      {console.log({breweryData})}
       {(!breweryData || !breweryData.id || breweryData?.id !== oneReview.brewery) 
       ? <div 
           style={{

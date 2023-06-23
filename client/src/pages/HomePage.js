@@ -38,13 +38,12 @@ export default function HomePage() {
     if(!loadingAllReviews && allReviewData && breweryData.length > 0) {
         return (
             <>
-                {allReviewData.allReviews.map((oneReview, index) => {
+                {allReviewData.allReviews.map((oneReview) => {
                     return (
                       <ReviewCard
                           oneReview={oneReview}
                           key={oneReview?._id}
                           breweryData={breweryData.filter(brewery => brewery.id === oneReview.brewery)[0]}
-                          // breweryData={breweryData[index]}
                       />
                     )
                 })}

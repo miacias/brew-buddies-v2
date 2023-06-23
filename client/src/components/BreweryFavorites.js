@@ -21,7 +21,7 @@ export default function BreweryFavorites(breweryFaves) {
                     dataSource={breweryFaves.breweries}
                     locale={{emptyText: <Empty image={Empty.PRESENTED_IMAGE_SIMPLE} description={'No favorites yet'} />}}
                     renderItem={(item, index) => (
-                    <List.Item actions={[item.website_url ? <Link to={item.website_url}>visit site</Link> : '', <Link to={`/breweries/${item.id}`}>see reviews</Link>]}>
+                    <List.Item actions={[item.website_url ? <Link to={item.website_url} target="_blank" rel="noopener noreferrer">visit site</Link> : '', <Link to={`/breweries/${item.id}`}>see reviews</Link>]}>
                         <List.Item.Meta
                         key={item._id}
                         title={item.name}
