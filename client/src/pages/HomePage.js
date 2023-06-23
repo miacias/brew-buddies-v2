@@ -43,8 +43,8 @@ export default function HomePage() {
                       <ReviewCard
                           oneReview={oneReview}
                           key={oneReview?._id}
-                          // breweryData={breweryData.filter(brewery => brewery.id === oneReview.brewery)[0]}
-                          breweryData={breweryData[index]}
+                          breweryData={breweryData.filter(brewery => brewery.id === oneReview.brewery)[0]}
+                          // breweryData={breweryData[index]}
                       />
                     )
                 })}

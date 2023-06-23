@@ -105,15 +105,15 @@ export function ProfilePage() {
       const reviewCards = data.reviewsByAuthor.map(review=> {
         return {
           author: profileData,
-          review
+          ...review
         };
       });
       setReviewCardData(reviewCards);
       const breweryIds = data.reviewsByAuthor.map((review) => review.brewery);
-      const reviewedBreweries = API.byManyIds(breweryIds);
+      const reviewedBreweries = await API.byManyIds(breweryIds);
       setBreweriesData((currentData) => ({
         ...currentData,
-        reviewedBreweries,
+        reviewed: reviewedBreweries,
       }));
     } catch (err) {
       console.error(err);
@@ -189,6 +189,11 @@ export function ProfilePage() {
       console.error(err);
     }
   };
+
+  const filterReviewedBreweries = (oneReview) => {
+    const matchingBrewery = breweriesData.reviewed.filter(brewery => brewery.id === oneReview.brewery)[0];
+    return matchingBrewery;
+  }
   
   // renders user friends, favorites, and wish lists. useMemo only computes after data changes
   const tabItems = useMemo(() => [
@@ -230,15 +235,20 @@ export function ProfilePage() {
           <>
             <Divider orientation='center' plain>Joined {format_date(userData.user?.createdAt)}</Divider>
             <ProfileTabs tabItems={tabItems}/>
+            <h3>Reviews by {profileData?.username}</h3>
           </>
         )}
-        {reviewCardData && reviewCardData.length > 0 && reviewCardData.map((oneReview, index) => {
+        {reviewCardData && reviewCardData.length > 0 && breweriesData.reviewed.length > 0 && reviewCardData.map((oneReview, index) => {
           return (
+            <>
             <ReviewCard
               key={index}
               oneReview={oneReview}
-              breweryData={breweriesData.reviewed}
+              // breweryData={breweriesData.reviewed}
+              // breweryData={breweriesData.reviewed.filter(brewery => brewery.id === oneReview.brewery)[0]}
+              breweryData={filterReviewedBreweries(oneReview)}
             />
+            </>
           )}
         )}
       </>
