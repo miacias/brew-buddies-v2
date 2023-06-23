@@ -240,13 +240,11 @@ export function ProfilePage() {
         )}
         {reviewCardData && reviewCardData.length > 0 && breweriesData.reviewed.length > 0 && reviewCardData.map((oneReview, index) => {
           return (
-            <>
             <ReviewCard
-              key={index}
+              key={oneReview._id}
               oneReview={oneReview}
               breweryData={filterReviewedBreweries(oneReview)}
             />
-            </>
           )}
         )}
       </>
