@@ -33,6 +33,7 @@ export function ProfilePage() {
   const [showForm, setShowForm] = useState(false);
   const { loading, error, data: userData, refetch } = useQuery(GET_USER, {
     variables: { username },
+    fetchPolicy: 'network-only',
   });
   const [follow] = useMutation(ADD_FRIEND);
   const [unfollow] = useMutation(REMOVE_FRIEND);
@@ -41,10 +42,10 @@ export function ProfilePage() {
 
   // sets page data from URL and DB
   useEffect(() => {
+    console.log(userData)
     if (!loading && userData && userData.user) {
       setProfileData(userData.user);
     }
-    refetch();
   }, [loading, error, userData, refetch]);
 
   // initiates friends list DB fetch for profile page once profile data is available
@@ -87,20 +88,13 @@ export function ProfilePage() {
     }
   }, [username, profileData]);
 
-  // gathers brewery info and review info into one State
-  useEffect(() => {
-    refetch();
-    if (profileData) {
-      fetchReviews(profileData._id);
-    }
-  }, [username, profileData]);
-
   // gets and sets reviews data for given profile
   const fetchReviews = async (userId) => {
     try {
       const { data } = await client.query({
         query: REVIEWS_BY_USER,
-        variables: { id: userId }
+        variables: { id: userId },
+        fetchPolicy: 'network-only',
       });
       const reviewCards = data.reviewsByAuthor.map(review=> {
         return {
@@ -134,6 +128,14 @@ export function ProfilePage() {
       console.error(err);
     }
   };
+
+  // gathers brewery info and review info into one State
+  useEffect(() => {
+    refetch();
+    if (profileData) {
+      fetchReviews(profileData._id);
+    }
+  }, [username, profileData]);
 
   const handleFollow = async () => {
     try {

@@ -10,7 +10,6 @@ const { Meta } = Card;
 export default function ReviewCard({ oneReview, breweryData }) {
   let urlParams = window.location.pathname;
   const [view, setView] = useState('');
-  const [brewery, setBrewery] = useState(null);
 
   // custom avatar: Ant Design UI v5.4 does not support built-in avatars from URL
   const AvatarFromURL = ({ url, ...props }) => {
