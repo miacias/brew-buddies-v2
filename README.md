@@ -30,21 +30,16 @@ The landing page of the website presents a list of recent brewery reviews. For f
 
 ## Contributors
 
-- Mia Ciasullo
-~ [GitHub](https://github.com/miacias)
-~ [LinkedIn](https://www.linkedin.com/in/miaciasullo)
+ **continuing contributors**
+- [Mia Ciasullo](https://github.com/miacias) - [LinkedIn](https://www.linkedin.com/in/miaciasullo)
 
-- Stevie O'Connell
-~ [GitHub](https://github.com/OConnell-Coder)
-~ [LinkedIn](https://www.linkedin.com/in/stephanie-o-connell-965051274)
+- [Stevie O'Connell](https://github.com/OConnell-Coder) - [LinkedIn](https://www.linkedin.com/in/stephanie-o-connell-965051274)
 
-- Margaret Saylor
-~ [GitHub](https://github.com/msaylorphila)
-~ [LinkedIn](https://www.linkedin.com/in/margaret-saylor)
+**other contributors** 
 
-- Fred Chang
-~ [GitHub](https://github.com/LearnedDr)
-~ [LinkedIn](https://www.linkedin.com/in/fredrick-chang-85987672)
+- [Margaret Saylor](https://github.com/msaylorphila) - [LinkedIn](https://www.linkedin.com/in/margaret-saylor)
+
+- [Fredrick Chang](https://github.com/LearnedDr) - [LinkedIn](https://www.linkedin.com/in/fredrick-chang-85987672)
 
 
 ## Roadmap
@@ -96,6 +91,7 @@ Tutor(s):
 Tutorials referenced:
 
 - [Tim Mousk](https://timmousk.com/blog/react-get-element-by-id/) - get element by ID with React useEffect
+- [freeCodeCamp](https://www.freecodecamp.org/news/how-to-use-html-to-open-link-in-new-tab/) - tab security using target="_blank" rel="noopener noreferrer"
 
 Artist(s):
 

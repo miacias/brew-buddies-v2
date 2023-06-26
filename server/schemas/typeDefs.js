@@ -58,6 +58,7 @@ const typeDefs = gql`
     getFriends(ids: [ID!]!): [User]
     allReviews(page: Int): [Review]
     reviewsByBrewery(breweryId: String): [Review]
+    reviewsByAuthor(id: ID!): [Review]
   }
 
   type Mutation {
