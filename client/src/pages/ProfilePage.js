@@ -42,7 +42,6 @@ export function ProfilePage() {
 
   // sets page data from URL and DB
   useEffect(() => {
-    console.log(userData)
     if (!loading && userData && userData.user) {
       setProfileData(userData.user);
     }
