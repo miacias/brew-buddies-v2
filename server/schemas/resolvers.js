@@ -91,6 +91,17 @@ const resolvers = {
         console.error(err);
       }
     },
+    // finds all reviews written by one user
+    reviewsByAuthor: async (parent, { id }) => {
+      try {
+        const reviewSet = await Review.find({
+          author: id,
+        }).sort({ createdAt: -1 });
+        return reviewSet;
+      } catch (err) {
+        console.error(err);
+      }
+    },
   },
   Mutation: {
     // creates new user and connects user to site

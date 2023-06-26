@@ -269,7 +269,7 @@ export default function BreweryPage() {
                     {/* external website button if site exists */}
                     {breweryData?.website_url && 
                     (<Tooltip title='View site!'>
-                      <Button icon={<DoubleRightOutlined />} href={breweryData?.website_url} />
+                      <Button icon={<DoubleRightOutlined />} href={breweryData?.website_url} target="_blank" rel="noopener noreferrer"/>
                     </Tooltip>)}
                 </Space.Compact>
                 {/* shows/hides Add Review form based on showForm State */}

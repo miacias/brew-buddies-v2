@@ -6,7 +6,9 @@ import * as API from '../utils/OpenBreweryDbApi';
 
 export default function HomePage() {
     const [breweryData, setBreweryData] = useState([]);
-    const { loading: loadingAllReviews, error: allReviewErr, data: allReviewData, refetch } = useQuery(ALL_REVIEWS);
+    const { loading: loadingAllReviews, error: allReviewErr, data: allReviewData, refetch } = useQuery(ALL_REVIEWS, {
+      fetchPolicy: 'network-only',
+    });
 
     // refetches breweries after a new review is added
     useEffect(() => {
@@ -29,16 +31,23 @@ export default function HomePage() {
           fetchBreweries();
         }
       }, [allReviewData]);
+    
+    // protects from page breaks if breweryData is unavailable
+    if (!breweryData) {
+      return <div>Loading...</div>;
+    }
 
     if(!loadingAllReviews && allReviewData && breweryData.length > 0) {
         return (
             <>
-                {allReviewData.allReviews.map((oneReview, index) => {
-                    return <ReviewCard
-                        oneReview={oneReview}
-                        key={oneReview?._id}
-                        breweryData={breweryData[index]}
-                    />
+                {allReviewData.allReviews.map((oneReview) => {
+                    return (
+                      <ReviewCard
+                          oneReview={oneReview}
+                          key={oneReview?._id}
+                          breweryData={breweryData.filter(brewery => brewery.id === oneReview.brewery)[0]}
+                      />
+                    )
                 })}
             </>
         )

@@ -124,3 +124,16 @@ export const BREWERY_REVIEWS = gql`
         }
     }
 `;
+
+export const REVIEWS_BY_USER = gql`
+    query Query($id: ID!) {
+        reviewsByAuthor(id: $id) {
+            _id
+            brewery
+            createdAt
+            rating
+            text
+            updatedAt
+        }
+    }
+`;
