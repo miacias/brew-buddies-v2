@@ -6,7 +6,9 @@ import * as API from '../utils/OpenBreweryDbApi';
 
 export default function HomePage() {
     const [breweryData, setBreweryData] = useState([]);
-    const { loading: loadingAllReviews, error: allReviewErr, data: allReviewData, refetch } = useQuery(ALL_REVIEWS);
+    const { loading: loadingAllReviews, error: allReviewErr, data: allReviewData, refetch } = useQuery(ALL_REVIEWS, {
+      fetchPolicy: 'network-only',
+    });
 
     // refetches breweries after a new review is added
     useEffect(() => {
