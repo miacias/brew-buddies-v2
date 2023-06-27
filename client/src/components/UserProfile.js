@@ -20,7 +20,7 @@ const UserProfile = ({ profileData, friendsData, loading, showForm, setShowForm,
   return (
     <>
       {profileData && !loading && (
-        <Space direction="horizontal" size={16}>
+        <Space direction="horizontal" size={16} style={{ display: 'inline-block' }}>
           {profileData?.profilePic ? (
             <AvatarFromURL url={profileData?.profilePic} size={300} />
           ) : (

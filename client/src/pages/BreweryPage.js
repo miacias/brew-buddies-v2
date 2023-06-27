@@ -213,7 +213,7 @@ export default function BreweryPage() {
                 <p>{breweryData?.street}</p>
                 <p>{breweryData?.city}, {breweryData?.state} {breweryData.postal_code && (formatters.format_zip_code(breweryData?.postal_code))}</p>
                 <p>{isNaN(calculateAverage(loadingReview, reviewData)[0]) ? 'No reviews' : `${calculateAverage(loadingReview, reviewData)[0]} out of 5⭐`}</p>
-                  <Space.Compact block>
+                  <Space.Compact block style={{ display: 'inline-block' }}>
                     {/* star ratings! */}
                     {!loadingReview && reviewData && (
                     <Tooltip title={`${calculateAverage(loadingReview, reviewData)[1]} ratings!`}>
