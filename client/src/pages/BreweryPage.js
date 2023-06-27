@@ -210,7 +210,7 @@ export default function BreweryPage() {
                 {/* street address */}
                 <p>{breweryData?.street}</p>
                 <p>{breweryData?.city}, {breweryData?.state} {breweryData.postal_code && (formatters.format_zip_code(breweryData?.postal_code))}</p>
-                  <Space.Compact block>
+                  <Space.Compact block style={{ display: 'inline-block' }}>
                     {/* star ratings! */}
                     {!loadingReview && reviewData && (
                     <Tooltip title={`${calculateAverage(loadingReview, reviewData)[1]} ratings!`}>
