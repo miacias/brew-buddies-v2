@@ -3,7 +3,7 @@ import { React, useState, useEffect } from "react";
 import { useMutation, useQuery } from "@apollo/client";
 import { useParams } from "react-router-dom";
 import { Col, Card, Space, Button, Tooltip, Divider } from "antd";
-import { StarOutlined, HeartOutlined, HeartFilled, PushpinOutlined, PushpinFilled, DoubleRightOutlined, PhoneOutlined } from "@ant-design/icons";
+import { StarOutlined, HeartOutlined, HeartFilled, PushpinOutlined, PushpinFilled, DoubleRightOutlined, PhoneOutlined, StarFilled } from "@ant-design/icons";
 import styles from '../components/BreweryCard.module.css';
 // utils
 import Auth from '../utils/auth';
@@ -196,8 +196,14 @@ export default function BreweryPage() {
               >
                 <h2>{breweryData?.name}</h2>
                 <Divider/>
+                {!loadingReview && reviewData && (
+                  <div style={{fontSize: '20px'}}>{isNaN(calculateAverage(loadingReview, reviewData)[0]) 
+                    ? 'No reviews' 
+                    : <p><span><StarFilled twoToneColor="#FADB14" /></span><span>{` ${calculateAverage(loadingReview, reviewData)[0]} out of 5!`}</span></p>
+                  }</div>
+                )}
                 {breweryData.brewery_type && (
-                <p>Brewery Flavor: {formatters.format_brewery_type(breweryData?.brewery_type)}</p>
+                  <p>Brewery Flavor: {formatters.format_brewery_type(breweryData?.brewery_type)}</p>
                 )}
                 {/* phone number */}
                 {breweryData.phone && (<div>
@@ -213,7 +219,7 @@ export default function BreweryPage() {
                 <p>{breweryData?.city}, {breweryData?.state} {breweryData.postal_code && (formatters.format_zip_code(breweryData?.postal_code))}</p>
                 {!loadingReview && reviewData && (
                   <>
-                    <p>{isNaN(calculateAverage(loadingReview, reviewData)[0]) ? 'No reviews' : `${calculateAverage(loadingReview, reviewData)[0]} out of 5⭐`}</p>
+                    {/* <p>{isNaN(calculateAverage(loadingReview, reviewData)[0]) ? 'No reviews' : `${calculateAverage(loadingReview, reviewData)[0]} out of 5⭐`}</p> */}
                     <Space.Compact block style={{ display: 'inline-block' }}>
                       {/* star ratings! */}
                       <Tooltip title={`${calculateAverage(loadingReview, reviewData)[1]} ratings!`}>
