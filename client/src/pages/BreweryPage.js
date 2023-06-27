@@ -2,8 +2,8 @@
 import { React, useState, useEffect } from "react";
 import { useMutation, useQuery } from "@apollo/client";
 import { useParams } from "react-router-dom";
-import { Col, Card, Space, Button, Tooltip } from "antd";
-import { StarOutlined, HeartOutlined, HeartFilled, PushpinOutlined, PushpinFilled, DoubleRightOutlined, PhoneOutlined } from "@ant-design/icons";
+import { Col, Card, Space, Button, Tooltip, Divider } from "antd";
+import { StarOutlined, HeartOutlined, HeartFilled, PushpinOutlined, PushpinFilled, DoubleRightOutlined, PhoneOutlined, StarFilled } from "@ant-design/icons";
 import styles from '../components/BreweryCard.module.css';
 // utils
 import Auth from '../utils/auth';
@@ -71,7 +71,6 @@ export default function BreweryPage() {
 
   // calculates star review average
   const calculateAverage = (loadingReview, reviewData) => {
-    // return 1;
     const ratings = [];
     let average;
     let totalReviews;
@@ -192,11 +191,19 @@ export default function BreweryPage() {
             <Col >
               <Card 
                 className={styles.singleBrewery} 
-                title={breweryData?.name} 
+                // title={breweryData?.name}
                 bordered={false}
               >
+                <h2>{breweryData?.name}</h2>
+                <Divider/>
+                {!loadingReview && reviewData && (
+                  <div style={{fontSize: '20px'}}>{isNaN(calculateAverage(loadingReview, reviewData)[0]) 
+                    ? 'No reviews' 
+                    : <p><span><StarFilled twoToneColor="#FADB14" /></span><span>{` ${calculateAverage(loadingReview, reviewData)[0]} out of 5!`}</span></p>
+                  }</div>
+                )}
                 {breweryData.brewery_type && (
-                <p>Brewery Flavor: {formatters.format_brewery_type(breweryData?.brewery_type)}</p>
+                  <p>Brewery Flavor: {formatters.format_brewery_type(breweryData?.brewery_type)}</p>
                 )}
                 {/* phone number */}
                 {breweryData.phone && (<div>
@@ -210,68 +217,70 @@ export default function BreweryPage() {
                 {/* street address */}
                 <p>{breweryData?.street}</p>
                 <p>{breweryData?.city}, {breweryData?.state} {breweryData.postal_code && (formatters.format_zip_code(breweryData?.postal_code))}</p>
-                  <Space.Compact block style={{ display: 'inline-block' }}>
-                    {/* star ratings! */}
-                    {!loadingReview && reviewData && (
-                    <Tooltip title={`${calculateAverage(loadingReview, reviewData)[1]} ratings!`}>
-                      <Button 
-                        type={showForm ? 'primary': 'default'}
-                        icon={<StarOutlined />}
-                        onClick={() => setShowForm(!showForm)}
-                      > 
-                      {/* shows average ratings, if any. shows Cancel when form is open */}
-                        {
-                          !showForm
-                            ? isNaN(calculateAverage(loadingReview, reviewData)[0])
+                {!loadingReview && reviewData && (
+                  <>
+                    {/* <p>{isNaN(calculateAverage(loadingReview, reviewData)[0]) ? 'No reviews' : `${calculateAverage(loadingReview, reviewData)[0]} out of 5⭐`}</p> */}
+                    <Space.Compact block style={{ display: 'inline-block' }}>
+                      {/* star ratings! */}
+                      <Tooltip title={`${calculateAverage(loadingReview, reviewData)[1]} ratings!`}>
+                        <Button 
+                          type={showForm ? 'primary': 'default'}
+                          icon={<StarOutlined />}
+                          onClick={() => setShowForm(!showForm)}
+                          > 
+                        {/* shows Cancel when form is open */}
+                          {
+                            !showForm
                               ? 'Add review'
-                              : `${calculateAverage(loadingReview, reviewData)[0]} out of 5`
-                            : 'Cancel'
-                        }
-                      </Button>
-                    </Tooltip>
-                    )}
-                    {/* add/remove from favorites! */}
-                    {favorite ? (
-                      <Tooltip title={favorite ? 'I love it!' : 'Add me?'}>
-                        <Button 
-                          icon={favorite ? <HeartFilled /> : <HeartOutlined />}
-                          onClick={handleRemoveFavBrewery}
-                        >Favorited
+                              : 'Cancel'
+                          }
                         </Button>
                       </Tooltip>
-                    ) : (
-                      <Tooltip title={favorite ? 'I love it!' : 'Add me?'}>
-                        <Button 
-                          icon={favorite ? <HeartFilled /> : <HeartOutlined />}
-                          onClick={handleAddFavBrewery}
-                        >Favorite it!
-                        </Button>
-                      </Tooltip>
-                    )}
-                    {/* add/remove from wish list! */}
-                    {wish ? (
-                      <Tooltip title={'Someday!'}>
-                        <Button 
-                          icon={wish ? <PushpinFilled /> : <PushpinOutlined />}
-                          onClick={handleRemoveWishBrewery}
-                        >Saved
-                        </Button>
-                      </Tooltip>
-                    ) : (
-                      <Tooltip title={'Save for later?'}>
-                        <Button 
-                          icon={wish ? <PushpinFilled /> : <PushpinOutlined />}
-                          onClick={handleAddWishBrewery}
-                        >Save it!
-                        </Button>
-                      </Tooltip>
-                    )}
-                    {/* external website button if site exists */}
-                    {breweryData?.website_url && 
-                    (<Tooltip title='View site!'>
-                      <Button icon={<DoubleRightOutlined />} href={breweryData?.website_url} target="_blank" rel="noopener noreferrer"/>
-                    </Tooltip>)}
-                </Space.Compact>
+                      
+                      {/* add/remove from favorites! */}
+                      {favorite ? (
+                        <Tooltip title={favorite ? 'I love it!' : 'Add me?'}>
+                          <Button 
+                            icon={favorite ? <HeartFilled /> : <HeartOutlined />}
+                            onClick={handleRemoveFavBrewery}
+                          >Favorited
+                          </Button>
+                        </Tooltip>
+                      ) : (
+                        <Tooltip title={favorite ? 'I love it!' : 'Add me?'}>
+                          <Button 
+                            icon={favorite ? <HeartFilled /> : <HeartOutlined />}
+                            onClick={handleAddFavBrewery}
+                          >Favorite it!
+                          </Button>
+                        </Tooltip>
+                      )}
+                      {/* add/remove from wish list! */}
+                      {wish ? (
+                        <Tooltip title={'Someday!'}>
+                          <Button 
+                            icon={wish ? <PushpinFilled /> : <PushpinOutlined />}
+                            onClick={handleRemoveWishBrewery}
+                          >Saved
+                          </Button>
+                        </Tooltip>
+                      ) : (
+                        <Tooltip title={'Save for later?'}>
+                          <Button 
+                            icon={wish ? <PushpinFilled /> : <PushpinOutlined />}
+                            onClick={handleAddWishBrewery}
+                          >Save it!
+                          </Button>
+                        </Tooltip>
+                      )}
+                      {/* external website button if site exists */}
+                      {breweryData?.website_url && 
+                      (<Tooltip title='View site!'>
+                        <Button icon={<DoubleRightOutlined />} href={breweryData?.website_url} target="_blank" rel="noopener noreferrer"/>
+                      </Tooltip>)}
+                    </Space.Compact>
+                  </>
+                )}
                 {/* shows/hides Add Review form based on showForm State */}
                 {showForm && 
                 <AddReviewForm 
