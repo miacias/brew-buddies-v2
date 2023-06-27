@@ -70,17 +70,16 @@ export default function BreweryPage() {
   }, [myData, breweryData]);
 
   // calculates star review average
-  const calculateAverage = async (loadingReview, reviewData) => {
-    // return 1;
+  const calculateAverage = (loadingReview, reviewData) => {
     const ratings = [];
     let average;
     let totalReviews;
     if (!loadingReview && reviewData.reviewsByBrewery) {
-      await reviewData.reviewsByBrewery.forEach(review => {
+      reviewData.reviewsByBrewery.forEach(review => {
         return ratings.push(parseInt(review.rating));
       });
       const initialValue = 0;
-      const sumWithInitial = await ratings.reduce(
+      const sumWithInitial = ratings.reduce(
         (accumulator, currentValue) => accumulator + currentValue,
         initialValue
       );
@@ -212,67 +211,70 @@ export default function BreweryPage() {
                 {/* street address */}
                 <p>{breweryData?.street}</p>
                 <p>{breweryData?.city}, {breweryData?.state} {breweryData.postal_code && (formatters.format_zip_code(breweryData?.postal_code))}</p>
-                <p>{isNaN(calculateAverage(loadingReview, reviewData)[0]) ? 'No reviews' : `${calculateAverage(loadingReview, reviewData)[0]} out of 5⭐`}</p>
-                  <Space.Compact block style={{ display: 'inline-block' }}>
-                    {/* star ratings! */}
-                    {!loadingReview && reviewData && (
-                    <Tooltip title={`${calculateAverage(loadingReview, reviewData)[1]} ratings!`}>
-                      <Button 
-                        type={showForm ? 'primary': 'default'}
-                        icon={<StarOutlined />}
-                        onClick={() => setShowForm(!showForm)}
-                      > 
-                      {/* shows Cancel when form is open */}
-                        {
-                          !showForm
-                            ? 'Add review'
-                            : 'Cancel'
-                        }
-                      </Button>
-                    </Tooltip>
-                    )}
-                    {/* add/remove from favorites! */}
-                    {favorite ? (
-                      <Tooltip title={favorite ? 'I love it!' : 'Add me?'}>
+                {!loadingReview && reviewData && (
+                  <>
+                    <p>{isNaN(calculateAverage(loadingReview, reviewData)[0]) ? 'No reviews' : `${calculateAverage(loadingReview, reviewData)[0]} out of 5⭐`}</p>
+                    <Space.Compact block style={{ display: 'inline-block' }}>
+                      {/* star ratings! */}
+                      <Tooltip title={`${calculateAverage(loadingReview, reviewData)[1]} ratings!`}>
                         <Button 
-                          icon={favorite ? <HeartFilled /> : <HeartOutlined />}
-                          onClick={handleRemoveFavBrewery}
-                        >Favorited
+                          type={showForm ? 'primary': 'default'}
+                          icon={<StarOutlined />}
+                          onClick={() => setShowForm(!showForm)}
+                          > 
+                        {/* shows Cancel when form is open */}
+                          {
+                            !showForm
+                              ? 'Add review'
+                              : 'Cancel'
+                          }
                         </Button>
                       </Tooltip>
-                    ) : (
-                      <Tooltip title={favorite ? 'I love it!' : 'Add me?'}>
-                        <Button 
-                          icon={favorite ? <HeartFilled /> : <HeartOutlined />}
-                          onClick={handleAddFavBrewery}
-                        >Favorite it!
-                        </Button>
-                      </Tooltip>
-                    )}
-                    {/* add/remove from wish list! */}
-                    {wish ? (
-                      <Tooltip title={'Someday!'}>
-                        <Button 
-                          icon={wish ? <PushpinFilled /> : <PushpinOutlined />}
-                          onClick={handleRemoveWishBrewery}
-                        >Saved
-                        </Button>
-                      </Tooltip>
-                    ) : (
-                      <Tooltip title={'Save for later?'}>
-                        <Button 
-                          icon={wish ? <PushpinFilled /> : <PushpinOutlined />}
-                          onClick={handleAddWishBrewery}
-                        >Save it!
-                        </Button>
-                      </Tooltip>
-                    )}
-                    {/* external website button if site exists */}
-                    {breweryData?.website_url && 
-                    (<Tooltip title='View site!'>
-                      <Button icon={<DoubleRightOutlined />} href={breweryData?.website_url} target="_blank" rel="noopener noreferrer"/>
-                    </Tooltip>)}
-                </Space.Compact>
+                      
+                      {/* add/remove from favorites! */}
+                      {favorite ? (
+                        <Tooltip title={favorite ? 'I love it!' : 'Add me?'}>
+                          <Button 
+                            icon={favorite ? <HeartFilled /> : <HeartOutlined />}
+                            onClick={handleRemoveFavBrewery}
+                          >Favorited
+                          </Button>
+                        </Tooltip>
+                      ) : (
+                        <Tooltip title={favorite ? 'I love it!' : 'Add me?'}>
+                          <Button 
+                            icon={favorite ? <HeartFilled /> : <HeartOutlined />}
+                            onClick={handleAddFavBrewery}
+                          >Favorite it!
+                          </Button>
+                        </Tooltip>
+                      )}
+                      {/* add/remove from wish list! */}
+                      {wish ? (
+                        <Tooltip title={'Someday!'}>
+                          <Button 
+                            icon={wish ? <PushpinFilled /> : <PushpinOutlined />}
+                            onClick={handleRemoveWishBrewery}
+                          >Saved
+                          </Button>
+                        </Tooltip>
+                      ) : (
+                        <Tooltip title={'Save for later?'}>
+                          <Button 
+                            icon={wish ? <PushpinFilled /> : <PushpinOutlined />}
+                            onClick={handleAddWishBrewery}
+                          >Save it!
+                          </Button>
+                        </Tooltip>
+                      )}
+                      {/* external website button if site exists */}
+                      {breweryData?.website_url && 
+                      (<Tooltip title='View site!'>
+                        <Button icon={<DoubleRightOutlined />} href={breweryData?.website_url} target="_blank" rel="noopener noreferrer"/>
+                      </Tooltip>)}
+                    </Space.Compact>
+                  </>
+                )}
                 {/* shows/hides Add Review form based on showForm State */}
                 {showForm && 
                 <AddReviewForm 
