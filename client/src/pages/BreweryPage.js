@@ -2,7 +2,7 @@
 import { React, useState, useEffect } from "react";
 import { useMutation, useQuery } from "@apollo/client";
 import { useParams } from "react-router-dom";
-import { Col, Card, Space, Button, Tooltip } from "antd";
+import { Col, Card, Space, Button, Tooltip, Divider } from "antd";
 import { StarOutlined, HeartOutlined, HeartFilled, PushpinOutlined, PushpinFilled, DoubleRightOutlined, PhoneOutlined } from "@ant-design/icons";
 import styles from '../components/BreweryCard.module.css';
 // utils
@@ -70,17 +70,17 @@ export default function BreweryPage() {
   }, [myData, breweryData]);
 
   // calculates star review average
-  const calculateAverage = (loadingReview, reviewData) => {
+  const calculateAverage = async (loadingReview, reviewData) => {
     // return 1;
     const ratings = [];
     let average;
     let totalReviews;
     if (!loadingReview && reviewData.reviewsByBrewery) {
-      reviewData.reviewsByBrewery.forEach(review => {
+      await reviewData.reviewsByBrewery.forEach(review => {
         return ratings.push(parseInt(review.rating));
       });
       const initialValue = 0;
-      const sumWithInitial = ratings.reduce(
+      const sumWithInitial = await ratings.reduce(
         (accumulator, currentValue) => accumulator + currentValue,
         initialValue
       );
@@ -192,9 +192,11 @@ export default function BreweryPage() {
             <Col >
               <Card 
                 className={styles.singleBrewery} 
-                title={breweryData?.name} 
+                // title={breweryData?.name}
                 bordered={false}
               >
+                <h2>{breweryData?.name}</h2>
+                <Divider/>
                 {breweryData.brewery_type && (
                 <p>Brewery Flavor: {formatters.format_brewery_type(breweryData?.brewery_type)}</p>
                 )}
@@ -210,6 +212,7 @@ export default function BreweryPage() {
                 {/* street address */}
                 <p>{breweryData?.street}</p>
                 <p>{breweryData?.city}, {breweryData?.state} {breweryData.postal_code && (formatters.format_zip_code(breweryData?.postal_code))}</p>
+                <p>{isNaN(calculateAverage(loadingReview, reviewData)[0]) ? 'No reviews' : `${calculateAverage(loadingReview, reviewData)[0]} out of 5⭐`}</p>
                   <Space.Compact block>
                     {/* star ratings! */}
                     {!loadingReview && reviewData && (
@@ -219,12 +222,10 @@ export default function BreweryPage() {
                         icon={<StarOutlined />}
                         onClick={() => setShowForm(!showForm)}
                       > 
-                      {/* shows average ratings, if any. shows Cancel when form is open */}
+                      {/* shows Cancel when form is open */}
                         {
                           !showForm
-                            ? isNaN(calculateAverage(loadingReview, reviewData)[0])
-                              ? 'Add review'
-                              : `${calculateAverage(loadingReview, reviewData)[0]} out of 5`
+                            ? 'Add review'
                             : 'Cancel'
                         }
                       </Button>
