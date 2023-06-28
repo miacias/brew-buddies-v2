@@ -29,7 +29,7 @@ module.exports = {
   signToken({ email, username, _id }) {
     const payload = { email, username, _id };
     console.log('signToken payload', payload);
-    const expiresIn = process.env.EXPIRATION || '2h';
-    return jwt.sign({ data: payload }, 'secretsecret', '2h');
+    const expiresIn = '2h';
+    return jwt.sign({ data: payload }, 'secretsecret', { expiresIn });
   },
 };
