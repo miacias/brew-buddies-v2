@@ -83,9 +83,10 @@ const Signup = () => {
       }
       // logs in new user
       Auth.login(data.addUser.token);
+      window.location.assign('/');
     } catch (err) {
       console.error(err);
-      setShowAlert(true);
+      // setShowAlert(true);
       form.resetFields();
     }
     // resets form to empty
