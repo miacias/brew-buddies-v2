@@ -29,8 +29,6 @@ module.exports = {
   signToken({ email, username, _id }) {
     const payload = { email, username, _id };
     const expiresIn = process.env.EXPIRATION || '2h';
-    return jwt.sign({ data: payload }, process.env.SECRET_KEY, {
-      expiresIn,
-    });
+    return jwt.sign({ data: payload }, 'secretsecret', '2h');
   },
 };
