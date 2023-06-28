@@ -14,7 +14,18 @@ export const UserProvider = ({ children }) => {
   const [userData, setUserData] = useState(null);
   const { loading, error, data /*, refetch */ } = useQuery(GET_ME);
 
+  const fetchToken = async () => {
+    return new Promise((resolve) => {
+      const token = Auth.getToken();
+      resolve(token);
+    })
+  }
+
   useEffect(() => {
+    if (!Auth.loggedIn()) {
+      setUserData(null); // clears user data if the user is not logged in
+      return;
+    }
     // retrieves and validates JWT
     const token = Auth.getToken();
     // validates token, decodes it, then extracts user data from DB

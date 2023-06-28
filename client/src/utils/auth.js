@@ -29,7 +29,8 @@ class AuthService {
 
   getToken() {
     // retrieves the user token from localStorage
-    return localStorage.getItem('id_token');
+    const token = localStorage.getItem('id_token');
+    return token !== null ? token : null;
   }
 
   login(idToken) {
