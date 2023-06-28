@@ -4,7 +4,7 @@ module.exports = {
   // protects routes via authentication
   authMiddleware({ req }) {
     // allows token to be sent via req.body, req.query, or headers
-    let token = req.body.token || req.query.token || req.headers.authorization;
+    let token = req.headers.authorization;
     // removes "Bearer", then returns token string
     if (req.headers.authorization) {
       token = token.split(' ').pop().trim();
