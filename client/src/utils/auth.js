@@ -35,8 +35,12 @@ class AuthService {
 
   login(idToken) {
     // saves user token to localStorage
-    localStorage.setItem('id_token', idToken);
-    window.location.assign('/');
+    return new Promise((resolve, reject) => {
+      localStorage.setItem('id_token', idToken);
+      resolve();
+    });
+    // localStorage.setItem('id_token', idToken);
+    // window.location.assign('/');
   }
 
   logout() {
