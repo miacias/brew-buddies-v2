@@ -79,14 +79,15 @@ const Signup = () => {
       const { data } = await addUser({
         variables: { ...userFormData },
       });
-      if (!data) {
-        throw new Error("something went wrong!");
+      console.log('signupForm handleFormSubmit data.addUser values', data.addUser);
+      if (!data.addUser) {
+        throw new Error('User creation failed.');
       }
       // logs in new user
       Auth.login(data.addUser.token);
     } catch (err) {
       console.error(err);
-      setShowAlert(true);
+      // setShowAlert(true);
       form.resetFields();
     }
     // resets form to empty

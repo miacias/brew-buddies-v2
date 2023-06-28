@@ -129,10 +129,20 @@ const resolvers = {
           bio,
           pronouns,
         });
+        console.log('newUser did not error in mongodb, next is signing token');
+        if (!newUser) {
+          throw new Error('User creation failed.');
+        }
         const token = signToken(newUser);
+        console.log('new token for new user', token);
+        console.log('returned value from resolver.js addUser', {
+          token,
+          user: newUser,
+        });
         return { token, user: newUser };
       } catch (err) {
         console.error(err);
+        throw new Error('An error occurred while creating the user.');
       }
     },
     // connects returning user to site
