@@ -16,7 +16,7 @@ module.exports = {
     // adds the decoded user data to request to be accessed in resolver
     try {
       const { data } = jwt.verify(token, process.env.SECRET_KEY, {
-        maxAge: process.env.EXPIRATION,
+        maxAge: '2h',
       });
       req.user = data;
     } catch (err) {
@@ -28,8 +28,12 @@ module.exports = {
   },
   signToken({ email, username, _id }) {
     const payload = { email, username, _id };
-    return jwt.sign({ data: payload }, process.env.SECRET_KEY, {
-      expiresIn: process.env.EXPIRATION,
-    });
+    try {
+      return jwt.sign({ data: payload }, process.env.SECRET_KEY, {
+        expiresIn: '2h',
+      });
+    } catch (err) {
+      throw new Error({ message: err });
+    }
   },
 };
