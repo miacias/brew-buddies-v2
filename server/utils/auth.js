@@ -28,8 +28,13 @@ module.exports = {
   },
   signToken({ email, username, _id }) {
     const payload = { email, username, _id };
-    return jwt.sign({ data: payload }, process.env.SECRET_KEY, {
-      expiresIn: process.env.EXPIRATION,
-    });
+    try {
+      return jwt.sign({ data: payload }, process.env.SECRET_KEY, {
+        expiresIn: process.env.EXPIRATION,
+      });
+    } catch (err) {
+      console.error(err);
+      // throw new Error({ message: err });
+    }
   },
 };
