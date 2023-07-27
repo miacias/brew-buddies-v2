@@ -28,12 +28,12 @@ module.exports = {
   },
   signToken({ email, username, _id }) {
     const payload = { email, username, _id };
-    try {
+    // try {
       return jwt.sign({ data: payload }, process.env.SECRET_KEY, {
         expiresIn: '2h',
       });
-    } catch (err) {
-      throw new Error({ message: err });
-    }
+    // } catch (err) {
+      // throw new Error({ message: err });
+    // }
   },
 };
