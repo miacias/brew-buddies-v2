@@ -33,7 +33,8 @@ module.exports = {
         expiresIn: process.env.EXPIRATION,
       });
     } catch (err) {
-      throw new Error({ message: err });
+      console.error(err);
+      // throw new Error({ message: err });
     }
   },
 };
