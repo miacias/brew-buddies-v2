@@ -13,11 +13,11 @@ const Login = () => {
   const [loginUser, { error, data }] = useMutation(LOGIN);
   const [form] = Form.useForm();
   
-
   const handleInputChange = (event) => {
     const { name, value } = event.target;
     setUserFormData({ ...userFormData, [name]: value });
   };
+
   const handleFormSubmit = async (event) => {
     try {
       const response = await loginUser({
@@ -27,16 +27,16 @@ const Login = () => {
         throw new Error('something went wrong!');
       }
       Auth.login(response.data.login.token);
+      window.location.assign('/');
     } catch (err) {
       console.error(err);
       form.resetFields();
     }
-
+    // resets form to empty
     setUserFormData({
       email: '',
       password: ''
     });
-  
   };
   
   return (
